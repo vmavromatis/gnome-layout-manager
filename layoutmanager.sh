@@ -223,8 +223,8 @@ done
 	wget https://dl.opendesktop.org/api/files/download/id/1492388511/United%20GNOME.tar.gz && tar -xvzf United\ GNOME.tar.gz -C ~/.themes/ 
 	#wget https://dl.opendesktop.org/api/files/download/id/1492218139/United%201.2.tar.gz && tar -xvzf United\ 1.2.tar.gz -C ~/.themes/ && mv ~/.themes/United\ 1.2 ~/.themes/United
 	gsettings set org.gnome.desktop.interface gtk-theme "United GNOME Light"
-	gsettings set org.gnome.shell.extensions.user-theme name "United GNOME Light"
-	gsettings set org.gnome.desktop.background picture-uri file:///$HOME/.themes/United/wallpaper.png
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "United GNOME Light"
+	gsettings set org.gnome.desktop.background picture-uri file:///$HOME/.themes/wallpaper.png
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gnome-shell --replace &
 	;;
