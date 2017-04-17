@@ -10,6 +10,7 @@
 #   16/04/2017 - V1.1 : Tweaked gsettings, bugfixes
 #   16/04/2017 - V1.2 : Added more extensions and themes for Unity
 #   17/04/2017 - V1.3 : Fixed invalid URL for United, changed to United Light theme, more bugfixes
+#   17/04/2017 - V1.4 : More bugfixing
 # -------------------------------------------
 
 # check tools availability
@@ -220,8 +221,8 @@ done
 	gnome-shell-extension-tool -e Move_Clock@rmy.pobox.com
 	mkdir ~/.themes && wget https://dl.opendesktop.org/api/files/download/id/1492388511/United%20GNOME.tar.gz && tar -xvzf United\ GNOME.tar.gz -C ~/.themes/ 
 	#wget https://dl.opendesktop.org/api/files/download/id/1492218139/United%201.2.tar.gz && tar -xvzf United\ 1.2.tar.gz -C ~/.themes/ && mv ~/.themes/United\ 1.2 ~/.themes/United
-	gsettings set org.gnome.desktop.interface gtk-theme "United"
-	gsettings set org.gnome.shell.extensions.user-theme name "United"
+	gsettings set org.gnome.desktop.interface gtk-theme "United GNOME Light"
+	gsettings set org.gnome.shell.extensions.user-theme name "United GNOME Light"
 	gsettings set org.gnome.desktop.background picture-uri file:///$HOME/.themes/United/wallpaper.png
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gnome-shell --replace &
