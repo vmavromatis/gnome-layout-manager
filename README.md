@@ -3,7 +3,7 @@
 A bash script that batch installs and tweaks GNOME extensions as well as GTK/Shell themes. There are currently three options available:
 --unity --windows & --macosx.
 
-## Unity
+## Unity (./layoutmanager.sh --unity)
 
 Preview: 
 ![Unity](http://i.imgur.com/He66ZsK.png)
@@ -17,12 +17,12 @@ Extensions:
 Theme:
 - United (GTK+Shell) v1.5 by globalmenuwhen
 
-## Windows (WIP)
+## Windows (WIP) (./layoutmanager.sh --windows)
 - Dash to panel
 - TopIcons Plus
 - GnoMenu
 
-## MacOSX (WIP)
+## MacOSX (WIP) (./layoutmanager.sh --macosx)
 - Dash to dock
 - TopIcons Plus
 
