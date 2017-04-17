@@ -28,8 +28,9 @@ Theme:
 
 
 ### Tested on: 
-Manjaro 3.22 X11, Antergos 3.24 X11, Fedora 3.22 Wayland (wayland needs to restart after script, and then re-run the script to work)
-![Fedora](http://i.imgur.com/692LOkr.png) 
+- Manjaro 3.22 X11, 
+- Antergos 3.24 X11, 
+- Fedora 3.22 Wayland (wayland needs to restart after script, and then re-run the script to work) [Preview](http://i.imgur.com/692LOkr.png "Fedora 25 Workstation") 
 
 Licence: GPL 3.0
 
