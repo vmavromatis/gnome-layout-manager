@@ -1,9 +1,9 @@
-## GNOME Layout Manager
+# GNOME Layout Manager
 
 A bash script that batch installs and tweaks GNOME extensions as well as GTK/Shell themes. There are currently three options available:
 --unity --windows & --macosx.
 
-# Unity
+## Unity
 
 Preview: 
 ![Unity](http://i.imgur.com/He66ZsK.png)
@@ -17,17 +17,17 @@ Extensions:
 Theme:
 - United (GTK+Shell) v1.5 by globalmenuwhen
 
-# Windows (WIP)
+## Windows (WIP)
 - Dash to panel
 - TopIcons Plus
 - GnoMenu
 
-# MacOSX (WIP)
+## MacOSX (WIP)
 - Dash to dock
 - TopIcons Plus
 
 
-#Tested on: 
+### Tested on: 
 Manjaro 3.22 X11, Antergos 3.24 X11, Fedora 3.22 Wayland (wayland needs to restart after script, and then re-run the script to work)
 ![Fedora](http://i.imgur.com/692LOkr.png) 
 
