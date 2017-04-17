@@ -22,5 +22,7 @@ A bash script that batch installs and tweaks GNOME extensions as well as GTK/She
 
 
 Licence: GPL 3.0
+
 Author: Bill Mavromatis
+
 Credits: Original extension manager script by Nicolas Bernaerts http://bernaerts.dyndns.org/, United theme by globalmenuwhen @ gnome-look.org
