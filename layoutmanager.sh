@@ -1,12 +1,15 @@
 #!/bin/bash
 # --------------------------------------------
 # Downloads and installs GNOME extensions to match layout
+# Licence: GPL 3.0
+# Author: Bill Mavromatis
+# Credits: Original extension manager script by Nicolas Bernaerts http://bernaerts.dyndns.org/, United theme by globalmenuwhen @ gnome-look.org
 #
 # Revision history :
-#   14/04/2017 - V1.0 : by bill-mavromatis ALPHA (use on a VM or liveUSB not on your main system, it may affect your extensions)
+#   14/04/2017 - V1.0 : ALPHA release(use on a VM or liveUSB not on your main system, it may affect your extensions)
 #   16/04/2017 - V1.1 : Tweaked gsettings, bugfixes
 #   16/04/2017 - V1.2 : Added more extensions and themes for Unity
-#   17/04/2017 - V1.3 : Fixed invalid URL for United, changed to United Light theme
+#   17/04/2017 - V1.3 : Fixed invalid URL for United, changed to United Light theme, more bugfixes
 # -------------------------------------------
 
 # check tools availability
