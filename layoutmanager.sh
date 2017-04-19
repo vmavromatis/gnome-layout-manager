@@ -220,15 +220,16 @@ done
 	gnome-shell-extension-tool -e Hide_Activities@shay.shayel.org
 	gnome-shell-extension-tool -e Move_Clock@rmy.pobox.com
 	[[ -e ~/.themes ]] || mkdir ~/.themes
-	wget https://dl.opendesktop.org/api/files/download/id/1492388511/United%20GNOME.tar.gz && tar -xvzf United\ GNOME.tar.gz -C ~/.themes/ 
+	wget https://dl.opendesktop.org/api/files/download/id/1492388511/United.tar.gz && tar -xvzf United.tar.gz -C ~/.themes/ 
+	wget https://dl.opendesktop.org/api/files/download/id/1492534932/wallpaper.png && mv ~/Pictures/wallpaper-united.png
 	[[ -e ~/.local/share/icons ]] || mkdir ~/.local/share/icons
 	wget https://launchpad.net/ubuntu/+archive/primary/+files/humanity-icon-theme_0.6.13.tar.xz && tar --xz -xvf humanity-icon-theme_0.6.13.tar.xz -C ~/.local/share/icons
 	mv ~/.local/share/icons/humanity-icon-theme-0.6.13/* ~/.local/share/icons
 	rmdir ~/.local/share/icons/humanity-icon-theme-0.6.13/
 	gsettings set org.gnome.desktop.interface icon-theme "Humanity"
-	gsettings set org.gnome.desktop.interface gtk-theme "United GNOME Light"
+	gsettings set org.gnome.desktop.interface gtk-theme "United Light"
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "United GNOME Light"
-	gsettings set org.gnome.desktop.background picture-uri file:///$HOME/.themes/wallpaper.png
+	gsettings set org.gnome.desktop.background picture-uri file:///$HOME/Pictures/wallpaper.png
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gnome-shell --replace &
 	;;
