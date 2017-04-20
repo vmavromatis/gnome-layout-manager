@@ -12,6 +12,7 @@
 #   17/04/2017 - V1.3 : Fixed invalid URL for United, changed to United Light theme, more bugfixes
 #   17/04/2017 - V1.4 : More bugfixing
 #   19/04/2017 - V1.5 : Fixed broken URL, changed download directory to /tmp, bugfixes
+#   20/04/2017 - V1.6 : Changed United to 1.74, in process of testing out dynamic panel transpareny and global menus
 # -------------------------------------------
 
 # check tools availability
@@ -51,7 +52,7 @@ while test ${#} -gt 0
 do
   case $1 in
     --windows) declare -a arr=("1160" "608" "1031"); LAYOUT="windows"; shift; ;;
-    --macosx) declare -a arr=("307" "1031" "1011"); LAYOUT="macosx"; shift; ;;
+    --macosx) declare -a arr=("307" "1031"); LAYOUT="macosx"; shift; ;;
     --unity) declare -a arr=("307" "1031" "19" "744" "2"); shift; LAYOUT="unity"; shift; ;;
     *) echo "Unknown parameter $1"; shift; ;;
   esac
@@ -215,21 +216,23 @@ done
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock extend-height 'true'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock show-running 'false'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock show-apps-at-top 'true'
+	#gsettings --schemadir ~/.local/share/gnome-shell/extensions/dynamic-panel-transparency@rockon999.github.io/schemas set org.gnome.shell.extensions.dynamic-panel-transparency TODO
 	gnome-shell-extension-tool -e dash-to-dock@micxgx.gmail.com
 	gnome-shell-extension-tool -e TopIcons@phocean.net
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gnome-shell-extension-tool -e Hide_Activities@shay.shayel.org
 	gnome-shell-extension-tool -e Move_Clock@rmy.pobox.com
+	#gnome-shell-extension-tool -e dynamic-panel-transparency@rockon999.github.io
 	[[ -e ~/.themes ]] || mkdir ~/.themes
-	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1492535398/United.tar.gz && tar -xvzf United.tar.gz -C ~/.themes/ 
+	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1492637575/United%201.7.4.tar.gz && tar -xvzf United\ 1.7.4.tar.gz -C ~/.themes/ 
 	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1492534932/wallpaper.png && mv wallpaper.png ~/Pictures/wallpaper-united.png
 	[[ -e ~/.local/share/icons ]] || mkdir ~/.local/share/icons
 	wget https://launchpad.net/ubuntu/+archive/primary/+files/humanity-icon-theme_0.6.13.tar.xz && tar --xz -xvf humanity-icon-theme_0.6.13.tar.xz -C ~/.local/share/icons
 	mv ~/.local/share/icons/humanity-icon-theme-0.6.13/* ~/.local/share/icons
 	rmdir ~/.local/share/icons/humanity-icon-theme-0.6.13/
 	gsettings set org.gnome.desktop.interface icon-theme "Humanity"
-	gsettings set org.gnome.desktop.interface gtk-theme "United Light"
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "United Light"
+	gsettings set org.gnome.desktop.interface gtk-theme "United"
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "United Mixed (Transparent)"
 	gsettings set org.gnome.desktop.background picture-uri file:///$HOME/Pictures/wallpaper-united.png
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gnome-shell --replace &
