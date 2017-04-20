@@ -224,7 +224,7 @@ done
 	gnome-shell-extension-tool -e Move_Clock@rmy.pobox.com
 	#gnome-shell-extension-tool -e dynamic-panel-transparency@rockon999.github.io
 	[[ -e ~/.themes ]] || mkdir ~/.themes
-	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1492708640/United%201.7.6.tar.gz && tar -xvzf United\ 1.7.6.tar.gz -C ~/.themes/ 
+	cd /tmp && wget https://github.com/godlyranchdressing/United-GNOME/raw/master/United-Latest.tar.gz && tar -xvzf United-Latest.tar.gz -C ~/.themes/ 
 	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1492534932/wallpaper.png && mv wallpaper.png ~/Pictures/wallpaper-united.png
 	[[ -e ~/.local/share/icons ]] || mkdir ~/.local/share/icons
 	wget https://launchpad.net/ubuntu/+archive/primary/+files/humanity-icon-theme_0.6.13.tar.xz && tar --xz -xvf humanity-icon-theme_0.6.13.tar.xz -C ~/.local/share/icons
@@ -232,7 +232,7 @@ done
 	rmdir ~/.local/share/icons/humanity-icon-theme-0.6.13/
 	gsettings set org.gnome.desktop.interface icon-theme "Humanity"
 	gsettings set org.gnome.desktop.interface gtk-theme "United"
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "United Mixed (Transparent)"
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "United"
 	gsettings set org.gnome.desktop.background picture-uri file:///$HOME/Pictures/wallpaper-united.png
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gnome-shell --replace &
