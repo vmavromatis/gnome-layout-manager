@@ -6,6 +6,13 @@
 A bash script that batch installs and tweaks GNOME extensions as well as GTK/Shell themes. There are currently three options available:
 --unity --windows & --macosx.
 
+To get and run the script:
+```
+wget https://raw.githubusercontent.com/bill-mavromatis/gnome-layout-manager/master/layoutmanager.sh
+chmod +x layoutmanager.sh
+./layoutmanager.sh
+```
+
 ## Unity (./layoutmanager.sh --unity)
 
 Preview: 
