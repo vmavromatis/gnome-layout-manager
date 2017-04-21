@@ -228,7 +228,7 @@ done
 	gnome-shell-extension-tool -e Move_Clock@rmy.pobox.com
 	#gnome-shell-extension-tool -e dynamic-panel-transparency@rockon999.github.io
 	[[ -e ~/.themes ]] || mkdir ~/.themes
-	cd /tmp && wget https://github.com/godlyranchdressing/United-GNOME/raw/master/United-Latest.tar.gz && tar -xvzf United-Latest.tar.gz -C ~/.themes/ 
+	cd /tmp && wget https://github.com/godlyranchdressing/United-GNOME/raw/master/United-Latest.tar.gz && tar -xvzf United-Latest.tar.gz -C ~/.themes/ && mv ~/.themes/United-Latest/* ~/.themes
 	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1492534932/wallpaper.png && mv wallpaper.png ~/Pictures/wallpaper-united.png
 	[[ -e ~/.local/share/icons ]] || mkdir ~/.local/share/icons
 	wget https://launchpad.net/ubuntu/+archive/primary/+files/humanity-icon-theme_0.6.13.tar.xz && tar --xz -xvf humanity-icon-theme_0.6.13.tar.xz -C ~/.local/share/icons
