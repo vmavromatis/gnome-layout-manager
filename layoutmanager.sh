@@ -13,6 +13,7 @@
 #   17/04/2017 - V1.4 : More bugfixing
 #   19/04/2017 - V1.5 : Fixed broken URL, changed download directory to /tmp, bugfixes
 #   20/04/2017 - V1.6 : Changed United to 1.74, in process of testing out dynamic panel transpareny and global menus
+#   21/04/2017 - V1.7 : Placed title bar icons for macosx to the left, some minor bugfixing, United URL now on github
 # -------------------------------------------
 
 # check tools availability
@@ -193,18 +194,21 @@ done
 	gnome-shell-extension-tool -e dash-to-panel@jderose9.github.com
 	gnome-shell-extension-tool -e gnomenu@panacier.gmail.com
 	gnome-shell-extension-tool -e TopIcons@phocean.net
+	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 	gnome-shell --replace &
 	;;
     macosx) 
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock dock-position 'BOTTOM'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock intellihide 'true'
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock intellihide 'false'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock extend-height 'false'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock background-opacity '0.1'
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock background-opacity '0.4'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock background-color '#FFFFFF'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock dock-fixed 'false'
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock dock-fixed 'true'
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'
 	gnome-shell-extension-tool -e dash-to-dock@micxgx.gmail.com
 	gnome-shell-extension-tool -e TopIcons@phocean.net
 	gnome-shell-extension-tool -e dash-to-dock@micxgx.gmail.com
+	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
 	gnome-shell --replace &
 	;;
     unity) 
@@ -235,6 +239,7 @@ done
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "United"
 	gsettings set org.gnome.desktop.background picture-uri file:///$HOME/Pictures/wallpaper-united.png
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
+	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 	gnome-shell --replace &
 	;;
   esac
