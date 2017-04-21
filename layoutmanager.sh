@@ -63,7 +63,7 @@ done
 if [ $LAYOUT == "windows" -o $LAYOUT == "macosx" -o $LAYOUT == "unity" ]; then
 	echo "Layout selected: $LAYOUT"
 	echo "Disabling all current extensions"
-	array=($(gsettings get org.gnome.shell enabled-extensions | sed -e 's/[;,()'\'']/ /g;s/  */ /g' ))
+	array=($(gsettings get org.gnome.shell enabled-extensions | sed -e 's/[;,()'\'']/ /g;s/  */ /g' | tr -d '[]'))
 
 	for each in "${array[@]}"
 	do
