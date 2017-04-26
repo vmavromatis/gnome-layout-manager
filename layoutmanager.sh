@@ -16,9 +16,26 @@
 #   21/04/2017 - V1.7 : Placed title bar icons for macosx to the left, some minor bugfixing, United URL now on github
 # -------------------------------------------
 
+ZENITY=true
+
 # check tools availability
-command -v unzip >/dev/null 2>&1 || { zenity --error --text="Please install unzip"; exit 1; }
-command -v wget >/dev/null 2>&1 || { zenity --error --text="Please install wget"; exit 1; }
+command -v zenity >/dev/null 2>&1 || { ZENITY=false; }
+command -v unzip >/dev/null 2>&1 || {
+    if [[ $ZENITY == true ]]; then
+      zenity --error --text="Please install unzip!"
+    else
+      echo -e "\e[31m\e[1mPlease install unzip!\e[0m"
+    fi;
+    exit 1;
+}
+command -v wget >/dev/null 2>&1 || {
+    if [[ $ZENITY == true ]]; then
+      zenity --error --text="Please install wget!"
+    else
+      echo -e "\e[31m\e[1mPlease install wget!\e[0m"
+    fi;
+    exit 1;
+}
 
 # install path (user and system mode)
 USER_PATH="$HOME/.local/share/gnome-shell/extensions"
@@ -38,14 +55,25 @@ INSTALL_SUDO=""
 LAYOUT=""
 
 # help message if no parameter
-if [ ${#} -eq 0 ];
-then
+if [[ ${#} -eq 0 && $ZENITY == false ]]; then
     echo "Downloads and installs GNOME extensions from Gnome Shell Extensions site https://extensions.gnome.org/"
     echo "Parameters are :"
     echo "  --windows               Windows 10 layout (panel and no topbar)"
     echo "  --macosx                Mac OS X layout (bottom dock /w autohide + topbar)"
     echo "  --unity                 Unity 7 layout (left dock + topbar)"
     exit 1
+else
+    ANSWER=$(zenity --list --text "Please select the layout you want" --radiolist \
+    --column "Pick" --column "Option" \
+    TRUE "Unity 7 layout (left dock + topbar)" \
+    FALSE "Mac OS X layout (bottom dock /w autohide + topbar)" \
+    FALSE "Windows 10 layout (panel and no topbar)")
+    case $ANSWER in
+        "Unity 7 layout (left dock + topbar)") declare -a arr=("307" "1031" "19" "744" "2"); shift; LAYOUT="unity"; shift; ;;
+        "Mac OS X layout (bottom dock /w autohide + topbar)") declare -a arr=("307" "1031"); LAYOUT="macosx"; shift; ;;
+        "Windows 10 layout (panel and no topbar)") declare -a arr=("1160" "608" "1031"); LAYOUT="windows"; shift; ;;
+        *) exit 1
+    esac
 fi
 
 # iterate thru parameters
@@ -60,7 +88,7 @@ do
 done
 
 #disable all current extensions
-if [ $LAYOUT == "windows" -o $LAYOUT == "macosx" -o $LAYOUT == "unity" ]; then
+if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" ]]; then
 	echo "Layout selected: $LAYOUT"
 	echo "Disabling all current extensions"
 	array=($(gsettings get org.gnome.shell enabled-extensions | sed -e 's/[;,()'\'']/ /g;s/  */ /g' | tr -d '[]'))
