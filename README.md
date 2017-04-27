@@ -3,7 +3,7 @@
 
 # GNOME Layout Manager
 
-![Menu](http://i.imgur.com/dQy9d41.png)
+![Menu](http://i.imgur.com/Zw1ByTr.png)
 
 A bash script that batch installs and tweaks GNOME extensions as well as GTK/Shell themes. There are currently three options available: Unity, Windows and MacOS.
 
