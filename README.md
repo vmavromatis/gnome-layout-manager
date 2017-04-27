@@ -22,6 +22,7 @@ Preview:
 Extensions:
 - Dash to dock
 - TopIcons Plus
+- AppIndicator
 - User Themes
 - Hide Activities
 - Frippery Move Clock
@@ -32,11 +33,13 @@ Theme:
 ## Windows (WIP)
 - Dash to panel
 - TopIcons Plus
+- AppIndicator
 - GnoMenu
 
 ## MacOSX (WIP) 
 - Dash to dock
 - TopIcons Plus
+- AppIndicator
 
 
 ### Tested on: 
