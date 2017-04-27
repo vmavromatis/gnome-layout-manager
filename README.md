@@ -30,18 +30,29 @@ Theme:
 - United (GTK+Shell) by @godlyranchdressing
 - Humanity icons
 
-## Windows (WIP)
+## Windows
 Extensions:
 - Dash to panel
 - TopIcons Plus
 - AppIndicator
 - GnoMenu
 
-## MacOSX (WIP) 
+## macOS
 Extensions:
 - Dash to dock
 - TopIcons Plus
 - AppIndicator
+
+
+### FAQ: 
+#### -I'm getting various errors on the console while running the script.
+This is normal, most of commands are verbose, and some errors are because you already have the extensions that the script is trying to download. Please ignore them and allow the script about 1 minute to complete. If the script is interrupted, you can re-run it. When done, close the console, and if you have any issues hit Alt+F2 and type "r" (this will restart X).
+
+#### -Can I save my current layout?
+This is currently being worked on.
+
+#### -Any new layouts being added?
+A Vanilla GNOME (no extensions) will be added soon, along with the user custom layout. Stay tuned. If you have any ideas, feel free to open an issue or make a pull request.
 
 
 ### Tested on: 
