@@ -71,9 +71,9 @@ else
     FALSE "macOS layout (bottom dock + topbar)" \
     FALSE "Windows 10 layout (bottom panel and no topbar)")
     case $ANSWER in
-        "Unity layout (left dock + topbar)") declare -a arr=("307" "1031" "19" "744" "2"); shift; LAYOUT="unity"; shift; ;;
-        "macOS layout (bottom dock + topbar)") declare -a arr=("307" "1031"); LAYOUT="macosx"; shift; ;;
-        "Windows 10 layout (bottom panel and no topbar)") declare -a arr=("1160" "608" "1031"); LAYOUT="windows"; shift; ;;
+        "Unity layout (left dock + topbar)") declare -a arr=("307" "1031" "19" "744" "2" "615"); shift; LAYOUT="unity"; shift; ;;
+        "macOS layout (bottom dock + topbar)") declare -a arr=("307" "1031" "615"); LAYOUT="macosx"; shift; ;;
+        "Windows 10 layout (bottom panel and no topbar)") declare -a arr=("1160" "608" "1031" "615" "800"); LAYOUT="windows"; shift; ;;
         *) exit 1
     esac
 fi
@@ -98,7 +98,7 @@ if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" ]]; then
 	for each in "${array[@]}"
 	do
 	  # echo "gnome-shell-extension-tool -d $each"
-	  gnome-shell-extension-tool -d $each
+	  gnome-shell-extension-tool -d "$each"
 	done
 fi 
 
@@ -118,7 +118,7 @@ do
 	TMP_DESC=$(mktemp -t ext-XXXXXXXX.txt)
 	TMP_ZIP=$(mktemp -t ext-XXXXXXXX.zip)
 	TMP_VERSION=$(mktemp -t ext-XXXXXXXX.ver)
-	rm ${TMP_DESC} ${TMP_ZIP}
+	rm "${TMP_DESC}" "${TMP_ZIP}"
 
 	# get extension description
 	wget --header='Accept-Encoding:none' -O "${TMP_DESC}" "${GNOME_SITE}/extension-info/?pk=${EXTENSION_ID}"
@@ -175,15 +175,15 @@ do
 	    wget --header='Accept-Encoding:none' -O "${TMP_ZIP}" "${GNOME_SITE}${EXTENSION_URL}"
 
 	    # unzip extension to installation folder
-	    ${INSTALL_SUDO} mkdir -p ${EXTENSION_PATH}/${EXTENSION_UUID}
-	    ${INSTALL_SUDO} unzip -oq "${TMP_ZIP}" -d ${EXTENSION_PATH}/${EXTENSION_UUID}
-	    ${INSTALL_SUDO} chmod +r ${EXTENSION_PATH}/${EXTENSION_UUID}/*
+	    ${INSTALL_SUDO} mkdir -p "${EXTENSION_PATH}"/"${EXTENSION_UUID}"
+	    ${INSTALL_SUDO} unzip -oq "${TMP_ZIP}" -d "${EXTENSION_PATH}"/"${EXTENSION_UUID}"
+	    ${INSTALL_SUDO} chmod +r "${EXTENSION_PATH}"/"${EXTENSION_UUID}"/*
 
 	    # list enabled extensions
 	    EXTENSION_LIST=$(gsettings get org.gnome.shell enabled-extensions | sed 's/^.\(.*\).$/\1/')
 
 	    # if extension not already enabled, declare it
-	    EXTENSION_ENABLED=$(echo ${EXTENSION_LIST} | grep ${EXTENSION_UUID})
+	    EXTENSION_ENABLED=$(echo "${EXTENSION_LIST}" | grep "${EXTENSION_UUID}")
 	    [ "$EXTENSION_ENABLED" = "" ] && gsettings set org.gnome.shell enabled-extensions "[${EXTENSION_LIST},'${EXTENSION_UUID}']"
 
 	    # success message
@@ -206,7 +206,7 @@ do
 	fi
 
 	# remove temporary files
-	rm -f ${TMP_DESC} ${TMP_ZIP} ${TMP_VERSION}
+	rm -f "${TMP_DESC}" "${TMP_ZIP}" "${TMP_VERSION}"
 done
 
 #tweak gsettings
@@ -271,7 +271,7 @@ done
 	gsettings set org.gnome.desktop.interface icon-theme "Humanity"
 	gsettings set org.gnome.desktop.interface gtk-theme "United"
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "United"
-	gsettings set org.gnome.desktop.background picture-uri file:///$HOME/Pictures/wallpaper-united.png
+	#gsettings set org.gnome.desktop.background picture-uri file:///"$HOME"/Pictures/wallpaper-united.png
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 	gnome-shell --replace &
