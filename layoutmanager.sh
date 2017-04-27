@@ -1,9 +1,9 @@
 #!/bin/bash
 # --------------------------------------------
-# Downloads and installs GNOME extensions to match layout
+# Downloads and installs GNOME extensions to match layout https://github.com/bill-mavromatis/gnome-layout-manager
 # Licence: GPL 3.0
 # Author: Bill Mavromatis
-# Credits: Original extension manager script by Nicolas Bernaerts http://bernaerts.dyndns.org/, United theme by globalmenuwhen @ gnome-look.org
+# Credits: Original extension manager script by Nicolas Bernaerts http://bernaerts.dyndns.org/, United theme by globalmenuwhen from gnome-look.org
 #
 # Revision history :
 #   14/04/2017 - V1.0 : ALPHA release(use on a VM or liveUSB not on your main system, it may affect your extensions)
@@ -14,6 +14,7 @@
 #   19/04/2017 - V1.5 : Fixed broken URL, changed download directory to /tmp, bugfixes
 #   20/04/2017 - V1.6 : Changed United to 1.74, in process of testing out dynamic panel transpareny and global menus
 #   21/04/2017 - V1.7 : Placed title bar icons for macosx to the left, some minor bugfixing, United URL now on github
+#   27/04/2017 - V1.8 : Added zenity dialogs (thanks to @JackHack96), added AppIndicator to go with TopIcons according to issue#2, made wgets verbose
 # -------------------------------------------
 
 ZENITY=true
@@ -63,15 +64,15 @@ if [[ ${#} -eq 0 && $ZENITY == false ]]; then
     echo "  --unity                 Unity 7 layout (left dock + topbar)"
     exit 1
 else
-    ANSWER=$(zenity --list --text "Please select the layout you want" --radiolist \
+    ANSWER=$(zenity --list --width=600 --height=400 --text "Please select the layout you want" --radiolist \
     --column "Pick" --column "Option" \
     TRUE "Unity 7 layout (left dock + topbar)" \
-    FALSE "Mac OS X layout (bottom dock /w autohide + topbar)" \
-    FALSE "Windows 10 layout (panel and no topbar)")
+    FALSE "Mac OS X layout (bottom dock + topbar)" \
+    FALSE "Windows 10 layout (bottom panel and no topbar)")
     case $ANSWER in
         "Unity 7 layout (left dock + topbar)") declare -a arr=("307" "1031" "19" "744" "2"); shift; LAYOUT="unity"; shift; ;;
-        "Mac OS X layout (bottom dock /w autohide + topbar)") declare -a arr=("307" "1031"); LAYOUT="macosx"; shift; ;;
-        "Windows 10 layout (panel and no topbar)") declare -a arr=("1160" "608" "1031"); LAYOUT="windows"; shift; ;;
+        "Mac OS X layout (bottom dock + topbar)") declare -a arr=("307" "1031"); LAYOUT="macosx"; shift; ;;
+        "Windows 10 layout (bottom panel and no topbar)") declare -a arr=("1160" "608" "1031"); LAYOUT="windows"; shift; ;;
         *) exit 1
     esac
 fi
@@ -80,9 +81,9 @@ fi
 while test ${#} -gt 0
 do
   case $1 in
-    --windows) declare -a arr=("1160" "608" "1031"); LAYOUT="windows"; shift; ;;
-    --macosx) declare -a arr=("307" "1031"); LAYOUT="macosx"; shift; ;;
-    --unity) declare -a arr=("307" "1031" "19" "744" "2"); shift; LAYOUT="unity"; shift; ;;
+    --windows) declare -a arr=("1160" "608" "1031" "615"); LAYOUT="windows"; shift; ;;
+    --macosx) declare -a arr=("307" "1031" "615"); LAYOUT="macosx"; shift; ;;
+    --unity) declare -a arr=("307" "1031" "19" "744" "2" "615"); shift; LAYOUT="unity"; shift; ;;
     *) echo "Unknown parameter $1"; shift; ;;
   esac
 done
@@ -95,7 +96,7 @@ if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" ]]; then
 
 	for each in "${array[@]}"
 	do
-	  echo "gnome-shell-extension-tool -d $each"
+	  # echo "gnome-shell-extension-tool -d $each"
 	  gnome-shell-extension-tool -d $each
 	done
 fi 
@@ -119,7 +120,7 @@ do
 	rm ${TMP_DESC} ${TMP_ZIP}
 
 	# get extension description
-	wget --quiet --header='Accept-Encoding:none' -O "${TMP_DESC}" "${GNOME_SITE}/extension-info/?pk=${EXTENSION_ID}"
+	wget --header='Accept-Encoding:none' -O "${TMP_DESC}" "${GNOME_SITE}/extension-info/?pk=${EXTENSION_ID}"
 
 	# get extension name
 	EXTENSION_NAME=$(sed 's/^.*name[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
@@ -164,13 +165,13 @@ do
 	  # else, install extension
 	  else
 	    # get extension description
-	    wget --quiet --header='Accept-Encoding:none' -O "${TMP_DESC}" "${GNOME_SITE}/extension-info/?pk=${EXTENSION_ID}&shell_version=${VERSION_AVAILABLE}"
+	    wget --header='Accept-Encoding:none' -O "${TMP_DESC}" "${GNOME_SITE}/extension-info/?pk=${EXTENSION_ID}&shell_version=${VERSION_AVAILABLE}"
 
 	    # get extension download URL
 	    EXTENSION_URL=$(sed 's/^.*download_url[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
 
 	    # download extension archive
-	    wget --quiet --header='Accept-Encoding:none' -O "${TMP_ZIP}" "${GNOME_SITE}${EXTENSION_URL}"
+	    wget --header='Accept-Encoding:none' -O "${TMP_ZIP}" "${GNOME_SITE}${EXTENSION_URL}"
 
 	    # unzip extension to installation folder
 	    ${INSTALL_SUDO} mkdir -p ${EXTENSION_PATH}/${EXTENSION_UUID}
@@ -222,6 +223,7 @@ done
 	gnome-shell-extension-tool -e dash-to-panel@jderose9.github.com
 	gnome-shell-extension-tool -e gnomenu@panacier.gmail.com
 	gnome-shell-extension-tool -e TopIcons@phocean.net
+	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
 	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 	gnome-shell --replace &
 	;;
@@ -236,6 +238,7 @@ done
 	gnome-shell-extension-tool -e dash-to-dock@micxgx.gmail.com
 	gnome-shell-extension-tool -e TopIcons@phocean.net
 	gnome-shell-extension-tool -e dash-to-dock@micxgx.gmail.com
+	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
 	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
 	gnome-shell --replace &
 	;;
@@ -254,6 +257,7 @@ done
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gnome-shell-extension-tool -e Hide_Activities@shay.shayel.org
 	gnome-shell-extension-tool -e Move_Clock@rmy.pobox.com
+	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
 	#gnome-shell-extension-tool -e dynamic-panel-transparency@rockon999.github.io
 	[[ -e ~/.themes ]] || mkdir ~/.themes
 	cd /tmp && wget https://github.com/godlyranchdressing/United-GNOME/raw/master/United-Latest.tar.gz && tar -xvzf United-Latest.tar.gz -C ~/.themes/ && mv ~/.themes/United-Latest/* ~/.themes
