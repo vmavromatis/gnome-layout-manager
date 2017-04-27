@@ -15,6 +15,7 @@
 #   20/04/2017 - V1.6 : Changed United to 1.74, in process of testing out dynamic panel transpareny and global menus
 #   21/04/2017 - V1.7 : Placed title bar icons for macosx to the left, some minor bugfixing, United URL now on github
 #   27/04/2017 - V1.8 : Added zenity dialogs (thanks to @JackHack96), added AppIndicator to go with TopIcons according to issue#2, made wgets verbose
+#   27/04/2017 - V1.9 : Renamed MacOSX to macOS, removed dropdown arrows from windows layout
 # -------------------------------------------
 
 ZENITY=true
@@ -60,18 +61,18 @@ if [[ ${#} -eq 0 && $ZENITY == false ]]; then
     echo "Downloads and installs GNOME extensions from Gnome Shell Extensions site https://extensions.gnome.org/"
     echo "Parameters are :"
     echo "  --windows               Windows 10 layout (panel and no topbar)"
-    echo "  --macosx                Mac OS X layout (bottom dock /w autohide + topbar)"
-    echo "  --unity                 Unity 7 layout (left dock + topbar)"
+    echo "  --macosx                macOS layout (bottom dock /w autohide + topbar)"
+    echo "  --unity                 Unity layout (left dock + topbar)"
     exit 1
 else
     ANSWER=$(zenity --list --width=600 --height=400 --text "Please select the layout you want" --radiolist \
     --column "Pick" --column "Option" \
-    TRUE "Unity 7 layout (left dock + topbar)" \
-    FALSE "Mac OS X layout (bottom dock + topbar)" \
+    TRUE "Unity layout (left dock + topbar)" \
+    FALSE "macOS layout (bottom dock + topbar)" \
     FALSE "Windows 10 layout (bottom panel and no topbar)")
     case $ANSWER in
-        "Unity 7 layout (left dock + topbar)") declare -a arr=("307" "1031" "19" "744" "2"); shift; LAYOUT="unity"; shift; ;;
-        "Mac OS X layout (bottom dock + topbar)") declare -a arr=("307" "1031"); LAYOUT="macosx"; shift; ;;
+        "Unity layout (left dock + topbar)") declare -a arr=("307" "1031" "19" "744" "2"); shift; LAYOUT="unity"; shift; ;;
+        "macOS layout (bottom dock + topbar)") declare -a arr=("307" "1031"); LAYOUT="macosx"; shift; ;;
         "Windows 10 layout (bottom panel and no topbar)") declare -a arr=("1160" "608" "1031"); LAYOUT="windows"; shift; ;;
         *) exit 1
     esac
@@ -81,7 +82,7 @@ fi
 while test ${#} -gt 0
 do
   case $1 in
-    --windows) declare -a arr=("1160" "608" "1031" "615"); LAYOUT="windows"; shift; ;;
+    --windows) declare -a arr=("1160" "608" "1031" "615" "800"); LAYOUT="windows"; shift; ;;
     --macosx) declare -a arr=("307" "1031" "615"); LAYOUT="macosx"; shift; ;;
     --unity) declare -a arr=("307" "1031" "19" "744" "2" "615"); shift; LAYOUT="unity"; shift; ;;
     *) echo "Unknown parameter $1"; shift; ;;
@@ -218,12 +219,13 @@ done
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu disable-activities-hotcorner 'true'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu hide-panel-view 'true'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu hide-panel-apps 'true'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu panel-menu-label-text 'Start'
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu panel-menu-label-text ["'Start'"]
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu disable-panel-menu-keyboard 'true'
 	gnome-shell-extension-tool -e dash-to-panel@jderose9.github.com
 	gnome-shell-extension-tool -e gnomenu@panacier.gmail.com
 	gnome-shell-extension-tool -e TopIcons@phocean.net
 	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
+	gnome-shell-extension-tool -e remove-dropdown-arrows@mpdeimos.com
 	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 	gnome-shell --replace &
 	;;
