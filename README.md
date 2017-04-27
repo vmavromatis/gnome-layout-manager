@@ -50,6 +50,7 @@ Extensions:
 - Antergos 3.24 X11, 
 - Fedora 3.22 Wayland (wayland needs to restart after script, and then re-run the script to work) [Preview](http://i.imgur.com/692LOkr.png "Fedora 25 Workstation") 
 - Ubuntu 3.24 X11
+
 (needs more testing for Wayland)
 
 Licence: GPL 3.0
