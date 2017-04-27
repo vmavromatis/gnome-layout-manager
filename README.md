@@ -28,15 +28,18 @@ Extensions:
 - Frippery Move Clock
 
 Theme:
-- United (GTK+Shell) v1.5 by globalmenuwhen
+- United (GTK+Shell) by globalmenuwhen
+- Humanity icons
 
 ## Windows (WIP)
+Extensions:
 - Dash to panel
 - TopIcons Plus
 - AppIndicator
 - GnoMenu
 
 ## MacOSX (WIP) 
+Extensions:
 - Dash to dock
 - TopIcons Plus
 - AppIndicator
@@ -46,6 +49,8 @@ Theme:
 - Manjaro 3.22 X11, 
 - Antergos 3.24 X11, 
 - Fedora 3.22 Wayland (wayland needs to restart after script, and then re-run the script to work) [Preview](http://i.imgur.com/692LOkr.png "Fedora 25 Workstation") 
+- Ubuntu 3.24 X11
+(needs more testing for Wayland)
 
 Licence: GPL 3.0
 
