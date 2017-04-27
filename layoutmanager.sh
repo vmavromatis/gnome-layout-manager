@@ -271,7 +271,7 @@ done
 	gsettings set org.gnome.desktop.interface icon-theme "Humanity"
 	gsettings set org.gnome.desktop.interface gtk-theme "United"
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "United"
-	gsettings set org.gnome.desktop.background picture-uri file:///"$HOME"/Pictures/wallpaper-united.png
+	#gsettings set org.gnome.desktop.background picture-uri file:///"$HOME"/Pictures/wallpaper-united.png
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 	gnome-shell --replace &
