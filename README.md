@@ -56,10 +56,11 @@ A Vanilla GNOME (no extensions) will be added soon, along with the user custom l
 
 
 ### Tested on: 
-- Manjaro 3.22 X11, 
-- Antergos 3.24 X11, 
+- Manjaro 3.22 X11
+- Antergos 3.24 X11
 - Fedora 3.22 Wayland (wayland needs to restart after script, and then re-run the script to work) [Preview](http://i.imgur.com/692LOkr.png "Fedora 25 Workstation") 
 - Ubuntu 3.24 X11
+- Arch Linux 3.24 Wayland
 
 (needs more testing for Wayland)
 
