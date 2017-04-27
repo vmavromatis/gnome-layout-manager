@@ -5,8 +5,7 @@
 
 ![Menu](http://i.imgur.com/dQy9d41.png)
 
-A bash script that batch installs and tweaks GNOME extensions as well as GTK/Shell themes. There are currently three options available:
---unity --windows & --macosx.
+A bash script that batch installs and tweaks GNOME extensions as well as GTK/Shell themes. There are currently three options available: Unity, Windows and MacOS.
 
 To get and run the script:
 ```
@@ -28,7 +27,7 @@ Extensions:
 - Frippery Move Clock
 
 Theme:
-- United (GTK+Shell) by globalmenuwhen
+- United (GTK+Shell) by @godlyranchdressing
 - Humanity icons
 
 ## Windows (WIP)
@@ -57,4 +56,4 @@ Licence: GPL 3.0
 
 Author: Bill Mavromatis
 
-Credits: Original extension manager script by Nicolas Bernaerts http://bernaerts.dyndns.org/, United theme by globalmenuwhen @ gnome-look.org
+Credits: Original extension manager script by Nicolas Bernaerts http://bernaerts.dyndns.org/, United theme by @godlyranchdressing
