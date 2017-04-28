@@ -72,7 +72,7 @@ else
     FALSE "Windows 10 layout (bottom panel and no topbar)")
     case $ANSWER in
         "Unity layout (left dock + topbar)") declare -a arr=("307" "1031" "19" "744" "2" "615"); shift; LAYOUT="unity"; shift; ;;
-        "macOS layout (bottom dock + topbar)") declare -a arr=("307" "1031" "615"); LAYOUT="macosx"; shift; ;;
+        "macOS layout (bottom dock + topbar)") declare -a arr=("307" "1031" "615" "19"); LAYOUT="macosx"; shift; ;;
         "Windows 10 layout (bottom panel and no topbar)") declare -a arr=("1160" "608" "1031" "615" "800"); LAYOUT="windows"; shift; ;;
         *) exit 1
     esac
@@ -83,7 +83,7 @@ while test ${#} -gt 0
 do
   case $1 in
     --windows) declare -a arr=("1160" "608" "1031" "615" "800"); LAYOUT="windows"; shift; ;;
-    --macosx) declare -a arr=("307" "1031" "615"); LAYOUT="macosx"; shift; ;;
+    --macosx) declare -a arr=("307" "1031" "615" "19"); LAYOUT="macosx"; shift; ;;
     --unity) declare -a arr=("307" "1031" "19" "744" "2" "615"); shift; LAYOUT="unity"; shift; ;;
     *) echo "Unknown parameter $1"; shift; ;;
   esac
@@ -230,6 +230,9 @@ done
 	gnome-shell --replace &
 	;;
     macosx) 
+	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz && tar -xvf Gnome-OSX-II-NT-2-5-1.tar.xz -C ~/.themes/ 
+	cd /tmp && wget -N https://github.com/keeferrourke/la-capitaine-icon-theme/archive/master.zip && unzip -o master.zip -d ~/.local/share/icons && mv ~/.local/share/icons/la-capitaine-icon-theme-master ~/.local/share/icons/La-Capitaine
+	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1488138514/Gnome-OSX-Dark-Shell.tar.gz && tar -xvzf Gnome-OSX-Dark-Shell -C ~/.themes/ 
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock dock-position 'BOTTOM'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock intellihide 'false'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock extend-height 'false'
@@ -241,7 +244,11 @@ done
 	gnome-shell-extension-tool -e TopIcons@phocean.net
 	gnome-shell-extension-tool -e dash-to-dock@micxgx.gmail.com
 	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
+	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
+	gsettings set org.gnome.desktop.interface icon-theme "La-Capitaine"
+	gsettings set org.gnome.desktop.interface gtk-theme "Gnome-OSX-II-NT-2-5-1"
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "Gnome-OSX-Dark-Shell"
 	gnome-shell --replace &
 	;;
     unity) 
@@ -263,15 +270,15 @@ done
 	#gnome-shell-extension-tool -e dynamic-panel-transparency@rockon999.github.io
 	[[ -e ~/.themes ]] || mkdir ~/.themes
 	cd /tmp && wget https://github.com/godlyranchdressing/United-GNOME/raw/master/United-Latest.tar.gz && tar -xvzf United-Latest.tar.gz -C ~/.themes/ && mv ~/.themes/United-Latest/* ~/.themes
-	cd /tmp && wget https://raw.githubusercontent.com/godlyranchdressing/United-GNOME/master/Wallpaper.png && mv Wallpaper.png ~/Pictures/wallpaper-united.png
+	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1492534932/wallpaper.png && mv wallpaper.png ~/Pictures/wallpaper-united.png
 	[[ -e ~/.local/share/icons ]] || mkdir ~/.local/share/icons
-	wget https://launchpad.net/ubuntu/+archive/primary/+files/humanity-icon-theme_0.6.13.tar.xz && tar --xz -xvf humanity-icon-theme_0.6.13.tar.xz -C ~/.local/share/icons
+	cd /tmp && wget https://launchpad.net/ubuntu/+archive/primary/+files/humanity-icon-theme_0.6.13.tar.xz && tar --xz -xvf humanity-icon-theme_0.6.13.tar.xz -C ~/.local/share/icons
 	mv ~/.local/share/icons/humanity-icon-theme-0.6.13/* ~/.local/share/icons
 	rmdir ~/.local/share/icons/humanity-icon-theme-0.6.13/
 	gsettings set org.gnome.desktop.interface icon-theme "Humanity"
 	gsettings set org.gnome.desktop.interface gtk-theme "United"
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "United"
-	gsettings set org.gnome.desktop.background picture-uri file:///"$HOME"/Pictures/wallpaper-united.png
+	#gsettings set org.gnome.desktop.background picture-uri file:///"$HOME"/Pictures/wallpaper-united.png #png corrupt, contacted author
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 	gnome-shell --replace &
