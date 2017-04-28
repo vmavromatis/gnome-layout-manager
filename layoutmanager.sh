@@ -233,7 +233,7 @@ done
     	[[ -e ~/.themes ]] || mkdir ~/.themes
 	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz && tar -xvf Gnome-OSX-II-NT-2-5-1.tar.xz -C ~/.themes/ 
 	cd /tmp && wget -N https://github.com/keeferrourke/la-capitaine-icon-theme/archive/master.zip && unzip -o master.zip -d ~/.local/share/icons && mv ~/.local/share/icons/la-capitaine-icon-theme-master ~/.local/share/icons/La-Capitaine
-	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1488138514/Gnome-OSX-Dark-Shell.tar.gz && tar -xvzf Gnome-OSX-Dark-Shell -C ~/.themes/ 
+	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1488138514/Gnome-OSX-Dark-Shell.tar.gz && tar -xvzf Gnome-OSX-Dark-Shell.tar.gz -C ~/.themes/ 
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock dock-position 'BOTTOM'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock intellihide 'false'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock extend-height 'false'
