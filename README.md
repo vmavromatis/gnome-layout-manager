@@ -27,26 +27,44 @@ Extensions:
 - Frippery Move Clock
 
 Theme:
-- United (GTK+Shell) by @godlyranchdressing
-- Humanity icons
+- United (GTK+Shell+Wallpaper) by [@godlyranchdressing](https://github.com/godlyranchdressing)
+- Humanity icons by Ubuntu
 
 ## Windows
+
+Preview: 
+![Windows](http://i.imgur.com/TTD4jGK.jpg)
+
 Extensions:
 - Dash to panel
 - TopIcons Plus
 - AppIndicator
 - GnoMenu
+- User Themes
+
+Theme:
+- Windows-10 (GTK+Shell+Icons) by [@B00merang-Project](https://github.com/B00merang-Project)
 
 ## macOS
+
+Preview: 
+![macOS](http://i.imgur.com/q4AmqOY.jpg)
+
 Extensions:
 - Dash to dock
 - TopIcons Plus
 - AppIndicator
+- User Themes
+
+Theme:
+- Gnome-OSX-II-NT (GTK) by [@PAULXFCE](https://www.gnome-look.org/member/455718/)
+- Human (Shell) by [@UMAYANGA](https://www.gnome-look.org/member/434822/)
+- La-Capitaine icons by [@keeferrourke](https://github.com/keeferrourke)
 
 
 ### FAQ: 
 #### -I'm getting various errors on the console while running the script.
-This is normal, most of commands are verbose, and some errors are because you already have the extensions that the script is trying to download. Please ignore them and allow the script about 1 minute to complete. If the script is interrupted, you can re-run it. When done, close the console, and if you have any issues hit Alt+F2 and type "r" (this will restart X).
+This is normal, most of commands are verbose, and some errors occur because you may already have the extensions that the script is trying to download. Please ignore them and allow the script about 1 minute to complete. If the script is interrupted, you can re-run it. When done, close the console, and if you have any issues hit Alt+F2 and type "r" (this will restart X).
 
 #### -Can I save my current layout?
 This is currently being worked on.
