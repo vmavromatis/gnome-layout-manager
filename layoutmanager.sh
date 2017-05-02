@@ -74,7 +74,7 @@ else
     FALSE "macOS layout (bottom dock + topbar)" \
     FALSE "Windows 10 layout (bottom panel and no topbar)")
     case $ANSWER in
-        "Unity layout (left dock + topbar)") declare -a arr=("307" "1031" "19" "744" "2" "615"); shift; LAYOUT="unity"; shift; ;;
+        "Unity layout (left dock + topbar)") declare -a arr=("307" "1031" "19" "744" "2" "615" "723"); shift; LAYOUT="unity"; shift; ;;
         "macOS layout (bottom dock + topbar)") declare -a arr=("307" "1031" "615" "19"); LAYOUT="macosx"; shift; ;;
         "Windows 10 layout (bottom panel and no topbar)") declare -a arr=("1160" "608" "1031" "615" "800" "19"); LAYOUT="windows"; shift; ;;
         *) exit 1
@@ -87,7 +87,7 @@ do
   case $1 in
     --windows) declare -a arr=("1160" "608" "1031" "615" "800" "19"); LAYOUT="windows"; shift; ;;
     --macosx) declare -a arr=("307" "1031" "615" "19"); LAYOUT="macosx"; shift; ;;
-    --unity) declare -a arr=("307" "1031" "19" "744" "2" "615"); shift; LAYOUT="unity"; shift; ;;
+    --unity) declare -a arr=("307" "1031" "19" "744" "2" "615" "723"); shift; LAYOUT="unity"; shift; ;;
     *) echo "Unknown parameter $1"; shift; ;;
   esac
 done
@@ -265,6 +265,7 @@ done
 	gsettings set org.gnome.desktop.interface icon-theme "La-Capitaine"
 	gsettings set org.gnome.desktop.interface gtk-theme "Gnome-OSX-II-NT-2-5-1"
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "Human"
+	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"	
 	gnome-shell --replace &
 	;;
     unity) 
@@ -282,6 +283,7 @@ done
 	gnome-shell-extension-tool -e Hide_Activities@shay.shayel.org
 	gnome-shell-extension-tool -e Move_Clock@rmy.pobox.com
 	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
+	gnome-shell-extension-tool -e pixel-saver@deadalnix.me
 	[[ -e ~/.themes ]] || mkdir ~/.themes
 	cd /tmp && wget https://github.com/godlyranchdressing/United-GNOME/raw/master/United-Latest.tar.gz && tar -xvzf United-Latest.tar.gz -C ~/.themes/ && mv ~/.themes/United-Latest/* ~/.themes
 	cd /tmp && wget https://raw.githubusercontent.com/godlyranchdressing/United-GNOME/master/Wallpaper.png && mv Wallpaper.png "$PICTURES_FOLDER"/wallpaper-united.png
@@ -294,7 +296,8 @@ done
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "United"
 	gsettings set org.gnome.desktop.background picture-uri file:///"$PICTURES_FOLDER"/wallpaper-united.png
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
-	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
+	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"	
 	gnome-shell --replace &
 	;;
   esac
