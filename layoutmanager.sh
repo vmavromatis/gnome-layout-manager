@@ -16,6 +16,7 @@
 #   21/04/2017 - V1.7 : Placed title bar icons for macosx to the left, some minor bugfixing, United URL now on github
 #   27/04/2017 - V1.8 : Added zenity dialogs (thanks to @JackHack96), added AppIndicator to go with TopIcons according to issue#2, made wgets verbose
 #   27/04/2017 - V1.9 : Renamed MacOSX to macOS, removed dropdown arrows from windows layout
+#   2/5/2017   - V2.0 : Added themes for Windows/macOS
 # -------------------------------------------
 
 ZENITY=true
@@ -74,8 +75,8 @@ else
     FALSE "Windows 10 layout (bottom panel and no topbar)")
     case $ANSWER in
         "Unity layout (left dock + topbar)") declare -a arr=("307" "1031" "19" "744" "2" "615"); shift; LAYOUT="unity"; shift; ;;
-        "macOS layout (bottom dock + topbar)") declare -a arr=("307" "1031" "615"); LAYOUT="macosx"; shift; ;;
-        "Windows 10 layout (bottom panel and no topbar)") declare -a arr=("1160" "608" "1031" "615" "800"); LAYOUT="windows"; shift; ;;
+        "macOS layout (bottom dock + topbar)") declare -a arr=("307" "1031" "615" "19"); LAYOUT="macosx"; shift; ;;
+        "Windows 10 layout (bottom panel and no topbar)") declare -a arr=("1160" "608" "1031" "615" "800" "19"); LAYOUT="windows"; shift; ;;
         *) exit 1
     esac
 fi
@@ -84,8 +85,8 @@ fi
 while test ${#} -gt 0
 do
   case $1 in
-    --windows) declare -a arr=("1160" "608" "1031" "615" "800"); LAYOUT="windows"; shift; ;;
-    --macosx) declare -a arr=("307" "1031" "615"); LAYOUT="macosx"; shift; ;;
+    --windows) declare -a arr=("1160" "608" "1031" "615" "800" "19"); LAYOUT="windows"; shift; ;;
+    --macosx) declare -a arr=("307" "1031" "615" "19"); LAYOUT="macosx"; shift; ;;
     --unity) declare -a arr=("307" "1031" "19" "744" "2" "615"); shift; LAYOUT="unity"; shift; ;;
     *) echo "Unknown parameter $1"; shift; ;;
   esac
@@ -214,6 +215,9 @@ done
 #tweak gsettings
   case $LAYOUT in
     windows) 
+    	[[ -e ~/.themes ]] || mkdir ~/.themes
+	cd /tmp && wget -N https://github.com/B00merang-Project/Windows-10/archive/master.zip && unzip -o 	master.zip -d ~/.themes/ 
+	cd /tmp && wget -N https://github.com/B00merang-Project/Windows-10-Icons/archive/master.zip && unzip -o master.zip -d ~/.local/share/icons 
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/TopIcons@phocean.net/schemas/ set org.gnome.shell.extensions.topicons tray-pos 'Center'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/TopIcons@phocean.net/schemas/ set org.gnome.shell.extensions.topicons tray-order '2'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com/schemas set org.gnome.shell.extensions.dash-to-panel panel-position 'BOTTOM'
@@ -223,15 +227,25 @@ done
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu hide-panel-apps 'true'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu panel-menu-label-text ["'Start'"]
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu disable-panel-menu-keyboard 'true'
-	gnome-shell-extension-tool -e dash-to-panel@jderose9.github.com
-	gnome-shell-extension-tool -e gnomenu@panacier.gmail.com
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu hide-shortcuts 'true'
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu hide-useroptions 'true'
+	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+	gsettings set org.gnome.desktop.interface icon-theme "Windows-10-Icons-master"
+	gsettings set org.gnome.desktop.interface gtk-theme "Windows-10-master"
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "Windows-10-master"
 	gnome-shell-extension-tool -e TopIcons@phocean.net
 	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
 	gnome-shell-extension-tool -e remove-dropdown-arrows@mpdeimos.com
-	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
+	gnome-shell-extension-tool -e dash-to-panel@jderose9.github.com
+	gnome-shell-extension-tool -e gnomenu@panacier.gmail.com
 	gnome-shell --replace &
 	;;
     macosx) 
+    	[[ -e ~/.themes ]] || mkdir ~/.themes
+	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz && tar -xvf Gnome-OSX-II-NT-2-5-1.tar.xz -C ~/.themes/ 
+	cd /tmp && wget -N https://github.com/keeferrourke/la-capitaine-icon-theme/archive/master.zip && unzip -o master.zip -d ~/.local/share/icons && mv ~/.local/share/icons/la-capitaine-icon-theme-master ~/.local/share/icons/La-Capitaine
+	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1493629910/Human.zip && unzip -o Human.zip -d ~/.themes/ 
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock dock-position 'BOTTOM'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock intellihide 'false'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock extend-height 'false'
@@ -239,11 +253,18 @@ done
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock background-color '#FFFFFF'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock dock-fixed 'true'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock show-apps-at-top 'true'
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock show-running 'true'
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock apply-custom-theme 'false'
 	gnome-shell-extension-tool -e dash-to-dock@micxgx.gmail.com
 	gnome-shell-extension-tool -e TopIcons@phocean.net
 	gnome-shell-extension-tool -e dash-to-dock@micxgx.gmail.com
 	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
+	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
+	gsettings set org.gnome.desktop.interface icon-theme "La-Capitaine"
+	gsettings set org.gnome.desktop.interface gtk-theme "Gnome-OSX-II-NT-2-5-1"
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "Human"
 	gnome-shell --replace &
 	;;
     unity) 
@@ -253,16 +274,14 @@ done
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock background-color '#2C001E'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock dock-fixed 'true'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock extend-height 'true'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock show-running 'false'
+	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock show-running 'true'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock show-apps-at-top 'true'
-	#gsettings --schemadir ~/.local/share/gnome-shell/extensions/dynamic-panel-transparency@rockon999.github.io/schemas set org.gnome.shell.extensions.dynamic-panel-transparency TODO
 	gnome-shell-extension-tool -e dash-to-dock@micxgx.gmail.com
 	gnome-shell-extension-tool -e TopIcons@phocean.net
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gnome-shell-extension-tool -e Hide_Activities@shay.shayel.org
 	gnome-shell-extension-tool -e Move_Clock@rmy.pobox.com
 	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
-	#gnome-shell-extension-tool -e dynamic-panel-transparency@rockon999.github.io
 	[[ -e ~/.themes ]] || mkdir ~/.themes
 	cd /tmp && wget https://github.com/godlyranchdressing/United-GNOME/raw/master/United-Latest.tar.gz && tar -xvzf United-Latest.tar.gz -C ~/.themes/ && mv ~/.themes/United-Latest/* ~/.themes
 	cd /tmp && wget https://raw.githubusercontent.com/godlyranchdressing/United-GNOME/master/Wallpaper.png && mv Wallpaper.png "$PICTURES_FOLDER"/wallpaper-united.png
