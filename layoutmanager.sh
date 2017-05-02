@@ -216,7 +216,7 @@ done
   case $LAYOUT in
     windows) 
     	[[ -e ~/.themes ]] || mkdir ~/.themes
-	cd /tmp && wget -N https://github.com/B00merang-Project/Windows-10/archive/master.zip && unzip -o Windows-10-master.zip -d ~/.themes/ 
+	cd /tmp && wget -N https://github.com/B00merang-Project/Windows-10/archive/master.zip && unzip -o 	master.zip -d ~/.themes/ 
 	cd /tmp && wget -N https://github.com/B00merang-Project/Windows-10-Icons/archive/master.zip && unzip -o master.zip -d ~/.local/share/icons 
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/TopIcons@phocean.net/schemas/ set org.gnome.shell.extensions.topicons tray-pos 'Center'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/TopIcons@phocean.net/schemas/ set org.gnome.shell.extensions.topicons tray-order '2'
@@ -229,16 +229,16 @@ done
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu disable-panel-menu-keyboard 'true'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu hide-shortcuts 'true'
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu hide-useroptions 'true'
-	gnome-shell-extension-tool -e dash-to-panel@jderose9.github.com
-	gnome-shell-extension-tool -e gnomenu@panacier.gmail.com
-	gnome-shell-extension-tool -e TopIcons@phocean.net
-	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
-	gnome-shell-extension-tool -e remove-dropdown-arrows@mpdeimos.com
-	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 	gsettings set org.gnome.desktop.interface icon-theme "Windows-10-Icons-master"
 	gsettings set org.gnome.desktop.interface gtk-theme "Windows-10-master"
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "Windows-10-master"
+	gnome-shell-extension-tool -e TopIcons@phocean.net
+	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
+	gnome-shell-extension-tool -e remove-dropdown-arrows@mpdeimos.com
+	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
+	gnome-shell-extension-tool -e dash-to-panel@jderose9.github.com
+	gnome-shell-extension-tool -e gnomenu@panacier.gmail.com
 	gnome-shell --replace &
 	;;
     macosx) 
