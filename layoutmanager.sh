@@ -16,7 +16,7 @@
 #   21/04/2017 - V1.7 : Placed title bar icons for macosx to the left, some minor bugfixing, United URL now on github
 #   27/04/2017 - V1.8 : Added zenity dialogs (thanks to @JackHack96), added AppIndicator to go with TopIcons according to issue#2, made wgets verbose
 #   27/04/2017 - V1.9 : Renamed MacOSX to macOS, removed dropdown arrows from windows layout
-#   2/5/2017   - V2.0 : Added themes for Windows/macOS
+#   2/5/2017   - V2.0 : Added themes for Windows/macOS, added vanilla layout, save/load function
 # -------------------------------------------
 
 ZENITY=true
@@ -63,20 +63,29 @@ LAYOUT=""
 if [[ ${#} -eq 0 && $ZENITY == false ]]; then
     echo "Downloads and installs GNOME extensions from Gnome Shell Extensions site https://extensions.gnome.org/"
     echo "Parameters are :"
+    echo "  --save                  Save current settings (dconf and extensions)"
+    echo "  --load                  Load dconf and extensions"
     echo "  --windows               Windows 10 layout (panel and no topbar)"
     echo "  --macosx                macOS layout (bottom dock /w autohide + topbar)"
     echo "  --unity                 Unity layout (left dock + topbar)"
+    echo "  --vanilla               GNOME Vanilla (Adwaita theme + disable all extensions)"
     exit 1
 else
-    ANSWER=$(zenity --list --width=600 --height=400 --text "Please select the layout you want" --radiolist \
-    --column "Pick" --column "Option" \
-    TRUE "Unity layout (left dock + topbar)" \
-    FALSE "macOS layout (bottom dock + topbar)" \
-    FALSE "Windows 10 layout (bottom panel and no topbar)")
+    ANSWER=$(zenity --list --width=800 --height=400 --text "Please select the layout you want" --column "Option" --column "Details" \
+    "Save" "Save current settings (dconf and extensions) to ~/.config/gnome-layout-manager/"\
+    "Load" "Load dconf and extensions"\
+    " " " "\
+    "Unity layout" "(left dock + topbar)" \
+    "GNOME Vanilla" "(Adwaita theme + disable all extensions)" \
+    "macOS layout" "(bottom dock + topbar)" \
+    "Windows 10 layout" "(bottom panel and no topbar)")
     case $ANSWER in
-        "Unity layout (left dock + topbar)") declare -a arr=("307" "1031" "19" "744" "2" "615" "723"); shift; LAYOUT="unity"; shift; ;;
-        "macOS layout (bottom dock + topbar)") declare -a arr=("307" "1031" "615" "19"); LAYOUT="macosx"; shift; ;;
-        "Windows 10 layout (bottom panel and no topbar)") declare -a arr=("1160" "608" "1031" "615" "800" "19"); LAYOUT="windows"; shift; ;;
+        "Save") declare -a arr=(); shift; LAYOUT="save"; shift; ;;
+        "Load") declare -a arr=(); shift; LAYOUT="load"; shift; ;;
+        "Unity layout") declare -a arr=("307" "1031" "19" "744" "2" "615" "723"); shift; LAYOUT="unity"; shift; ;;
+        "GNOME Vanilla") declare -a arr=(); LAYOUT="vanilla"; shift; ;;
+        "macOS layout") declare -a arr=("307" "1031" "615" "19"); LAYOUT="macosx"; shift; ;;
+        "Windows 10 layout") declare -a arr=("1160" "608" "1031" "615" "800" "19"); LAYOUT="windows"; shift; ;;
         *) exit 1
     esac
 fi
@@ -85,15 +94,18 @@ fi
 while test ${#} -gt 0
 do
   case $1 in
+    --save) declare -a arr=(); LAYOUT="save"; shift; ;;
+    --load) declare -a arr=(); LAYOUT="load"; shift; ;;
     --windows) declare -a arr=("1160" "608" "1031" "615" "800" "19"); LAYOUT="windows"; shift; ;;
     --macosx) declare -a arr=("307" "1031" "615" "19"); LAYOUT="macosx"; shift; ;;
     --unity) declare -a arr=("307" "1031" "19" "744" "2" "615" "723"); shift; LAYOUT="unity"; shift; ;;
+    --vanilla) declare -a arr=(); shift; LAYOUT="vanilla"; shift; ;;
     *) echo "Unknown parameter $1"; shift; ;;
   esac
 done
 
 #disable all current extensions
-if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" ]]; then
+if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" || $LAYOUT == "vanilla" ]]; then
 	echo "Layout selected: $LAYOUT"
 	echo "Disabling all current extensions"
 	array=($(gsettings get org.gnome.shell enabled-extensions | sed -e 's/[;,()'\'']/ /g;s/  */ /g' | tr -d '[]'))
@@ -106,113 +118,116 @@ if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" ]]; then
 fi 
 
 #install all extensions from array
-for EXTENSION_ID in "${arr[@]}"
-do
-	# if no extension id, exit
-	#[ "${EXTENSION_ID}" = "" ] && { echo "You must specify an extension ID"; exit; }
+if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" ]]; then
+	for EXTENSION_ID in "${arr[@]}"
+	do
+		# if no extension id, exit
+		#[ "${EXTENSION_ID}" = "" ] && { echo "You must specify an extension ID"; exit; }
 
-	# if no action, exit
-	#[ "${ACTION}" = "" ] && { echo "You must specify a layout"; exit; }
+		# if no action, exit
+		#[ "${ACTION}" = "" ] && { echo "You must specify a layout"; exit; }
 
-	# if system mode, set system installation path and sudo mode
-	#[ "${INSTALL_MODE}" = "system" ] && { EXTENSION_PATH="${SYSTEM_PATH}"; INSTALL_SUDO="sudo"; }
+		# if system mode, set system installation path and sudo mode
+		#[ "${INSTALL_MODE}" = "system" ] && { EXTENSION_PATH="${SYSTEM_PATH}"; INSTALL_SUDO="sudo"; }
 
-	# create temporary files
-	TMP_DESC=$(mktemp -t ext-XXXXXXXX.txt)
-	TMP_ZIP=$(mktemp -t ext-XXXXXXXX.zip)
-	TMP_VERSION=$(mktemp -t ext-XXXXXXXX.ver)
-	rm "${TMP_DESC}" "${TMP_ZIP}"
+		# create temporary files
+		TMP_DESC=$(mktemp -t ext-XXXXXXXX.txt)
+		TMP_ZIP=$(mktemp -t ext-XXXXXXXX.zip)
+		TMP_VERSION=$(mktemp -t ext-XXXXXXXX.ver)
+		rm "${TMP_DESC}" "${TMP_ZIP}"
 
-	# get extension description
-	wget --header='Accept-Encoding:none' -O "${TMP_DESC}" "${GNOME_SITE}/extension-info/?pk=${EXTENSION_ID}"
+		# get extension description
+		wget --header='Accept-Encoding:none' -O "${TMP_DESC}" "${GNOME_SITE}/extension-info/?pk=${EXTENSION_ID}"
 
-	# get extension name
-	EXTENSION_NAME=$(sed 's/^.*name[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
+		# get extension name
+		EXTENSION_NAME=$(sed 's/^.*name[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
 
-	# get extension description
-	EXTENSION_DESCR=$(sed 's/^.*description[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
+		# get extension description
+		EXTENSION_DESCR=$(sed 's/^.*description[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
 
-	# get extension UUID
-	EXTENSION_UUID=$(sed 's/^.*uuid[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
+		# get extension UUID
+		EXTENSION_UUID=$(sed 's/^.*uuid[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
 
-	# if ID not known
-	if [ ! -s "${TMP_DESC}" ];
-	then
-	  echo "Extension with ID ${EXTENSION_ID} is not available from Gnome Shell Extension site."
+		# if ID not known
+		if [ ! -s "${TMP_DESC}" ];
+		then
+		  echo "Extension with ID ${EXTENSION_ID} is not available from Gnome Shell Extension site."
 	
-	else
-	# else, if installation mode
-	#elif [ "${ACTION}" = "install" ];
-	#then
+		else
+		# else, if installation mode
+		#elif [ "${ACTION}" = "install" ];
+		#then
 
-	  # extract all available versions
-	  sed "s/\([0-9]*\.[0-9]*[0-9\.]*\)/\n\1/g" "${TMP_DESC}" | grep "pk" | grep "version" | sed "s/^\([0-9\.]*\).*$/\1/" > "${TMP_VERSION}"
+		  # extract all available versions
+		  sed "s/\([0-9]*\.[0-9]*[0-9\.]*\)/\n\1/g" "${TMP_DESC}" | grep "pk" | grep "version" | sed "s/^\([0-9\.]*\).*$/\1/" > "${TMP_VERSION}"
 
-	  # check if current version is available
-	  VERSION_AVAILABLE=$(grep "^${GNOME_VERSION}$" "${TMP_VERSION}")
+		  # check if current version is available
+		  VERSION_AVAILABLE=$(grep "^${GNOME_VERSION}$" "${TMP_VERSION}")
 
-	  # if version is not available, get the next one available
-	  if [ "${VERSION_AVAILABLE}" = "" ]
-	  then
-	    echo "${GNOME_VERSION}" >> "${TMP_VERSION}"
-	    VERSION_AVAILABLE=$(cat "${TMP_VERSION}" | sort -V | sed "1,/${GNOME_VERSION}/d" | head -n 1)
-	  fi
+		  # if version is not available, get the next one available
+		  if [ "${VERSION_AVAILABLE}" = "" ]
+		  then
+		    echo "${GNOME_VERSION}" >> "${TMP_VERSION}"
+		    VERSION_AVAILABLE=$(cat "${TMP_VERSION}" | sort -V | sed "1,/${GNOME_VERSION}/d" | head -n 1)
+		  fi
 
-	  # if still no version is available, error message
-	  if [ "${VERSION_AVAILABLE}" = "" ]
-	  then
-	    echo "Gnome Shell version is ${GNOME_VERSION}."
-	    echo "Extension ${EXTENSION_NAME} is not available for this version."
-	    echo "Available versions are :"
-	    sed "s/\([0-9]*\.[0-9]*[0-9\.]*\)/\n\1/g" "${TMP_DESC}" | grep "pk" | grep "version" | sed "s/^\([0-9\.]*\).*$/\1/" | sort -V | xargs
+		  # if still no version is available, error message
+		  if [ "${VERSION_AVAILABLE}" = "" ]
+		  then
+		    echo "Gnome Shell version is ${GNOME_VERSION}."
+		    echo "Extension ${EXTENSION_NAME} is not available for this version."
+		    echo "Available versions are :"
+		    sed "s/\([0-9]*\.[0-9]*[0-9\.]*\)/\n\1/g" "${TMP_DESC}" | grep "pk" | grep "version" | sed "s/^\([0-9\.]*\).*$/\1/" | sort -V | xargs
 
-	  # else, install extension
-	  else
-	    # get extension description
-	    wget --header='Accept-Encoding:none' -O "${TMP_DESC}" "${GNOME_SITE}/extension-info/?pk=${EXTENSION_ID}&shell_version=${VERSION_AVAILABLE}"
+		  # else, install extension
+		  else
+		    # get extension description
+		    wget --header='Accept-Encoding:none' -O "${TMP_DESC}" "${GNOME_SITE}/extension-info/?pk=${EXTENSION_ID}&shell_version=${VERSION_AVAILABLE}"
 
-	    # get extension download URL
-	    EXTENSION_URL=$(sed 's/^.*download_url[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
+		    # get extension download URL
+		    EXTENSION_URL=$(sed 's/^.*download_url[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
 
-	    # download extension archive
-	    wget --header='Accept-Encoding:none' -O "${TMP_ZIP}" "${GNOME_SITE}${EXTENSION_URL}"
+		    # download extension archive
+		    wget --header='Accept-Encoding:none' -O "${TMP_ZIP}" "${GNOME_SITE}${EXTENSION_URL}"
 
-	    # unzip extension to installation folder
-	    ${INSTALL_SUDO} mkdir -p "${EXTENSION_PATH}"/"${EXTENSION_UUID}"
-	    ${INSTALL_SUDO} unzip -oq "${TMP_ZIP}" -d "${EXTENSION_PATH}"/"${EXTENSION_UUID}"
-	    ${INSTALL_SUDO} chmod +r "${EXTENSION_PATH}"/"${EXTENSION_UUID}"/*
+		    # unzip extension to installation folder
+		    ${INSTALL_SUDO} mkdir -p "${EXTENSION_PATH}"/"${EXTENSION_UUID}"
+		    ${INSTALL_SUDO} unzip -oq "${TMP_ZIP}" -d "${EXTENSION_PATH}"/"${EXTENSION_UUID}"
+		    ${INSTALL_SUDO} chmod +r "${EXTENSION_PATH}"/"${EXTENSION_UUID}"/*
 
-	    # list enabled extensions
-	    EXTENSION_LIST=$(gsettings get org.gnome.shell enabled-extensions | sed 's/^.\(.*\).$/\1/')
+		    # list enabled extensions
+		    EXTENSION_LIST=$(gsettings get org.gnome.shell enabled-extensions | sed 's/^.\(.*\).$/\1/')
 
-	    # if extension not already enabled, declare it
-	    EXTENSION_ENABLED=$(echo "${EXTENSION_LIST}" | grep "${EXTENSION_UUID}")
-	    [ "$EXTENSION_ENABLED" = "" ] && gsettings set org.gnome.shell enabled-extensions "[${EXTENSION_LIST},'${EXTENSION_UUID}']"
+		    # if extension not already enabled, declare it
+		    EXTENSION_ENABLED=$(echo "${EXTENSION_LIST}" | grep "${EXTENSION_UUID}")
+		    [ "$EXTENSION_ENABLED" = "" ] && gsettings set org.gnome.shell enabled-extensions "[${EXTENSION_LIST},'${EXTENSION_UUID}']"
 
-	    # success message
-	    echo "Gnome Shell version is ${GNOME_VERSION}."
-	    echo "Extension ${EXTENSION_NAME} version ${VERSION_AVAILABLE} has been installed in ${INSTALL_MODE} mode (Id ${EXTENSION_ID}, Uuid ${EXTENSION_UUID})"
-	    #echo "Restart Gnome Shell to take effect."
+		    # success message
+		    echo "Gnome Shell version is ${GNOME_VERSION}."
+		    echo "Extension ${EXTENSION_NAME} version ${VERSION_AVAILABLE} has been installed in ${INSTALL_MODE} mode (Id ${EXTENSION_ID}, Uuid ${EXTENSION_UUID})"
+		    #echo "Restart Gnome Shell to take effect."
 
-	  fi
+		  fi
 
-	# else, it is remove mode
-	#else
+		# else, it is remove mode
+		#else
 
-	    # remove extension folder
-	    #${INSTALL_SUDO} rm -f -r "${EXTENSION_PATH}/${EXTENSION_UUID}"
+		    # remove extension folder
+		    #${INSTALL_SUDO} rm -f -r "${EXTENSION_PATH}/${EXTENSION_UUID}"
 
-	    # success message
-	    #echo "Extension ${EXTENSION_NAME} has been removed in ${INSTALL_MODE} mode (Id ${EXTENSION_ID}, Uuid ${EXTENSION_UUID})"
-	    #echo "Restart Gnome Shell to take effect."
+		    # success message
+		    #echo "Extension ${EXTENSION_NAME} has been removed in ${INSTALL_MODE} mode (Id ${EXTENSION_ID}, Uuid ${EXTENSION_UUID})"
+		    #echo "Restart Gnome Shell to take effect."
 
-	fi
+		fi
 
-	# remove temporary files
-	rm -f "${TMP_DESC}" "${TMP_ZIP}" "${TMP_VERSION}"
-done
+		# remove temporary files
+		rm -f "${TMP_DESC}" "${TMP_ZIP}" "${TMP_VERSION}"
+	done
+fi
 
-#tweak gsettings
+
+#apply layout
   case $LAYOUT in
     windows) 
     	[[ -e ~/.themes ]] || mkdir ~/.themes
@@ -299,5 +314,31 @@ done
 	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
 	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"	
 	gnome-shell --replace &
+	;;
+    vanilla) 
+	gsettings set org.gnome.desktop.interface gtk-theme "Adwaita"
+	gsettings set org.gnome.desktop.interface icon-theme "Adwaita"
+	gsettings set org.gnome.desktop.interface cursor-theme "Adwaita"
+	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+	gnome-shell --replace &
+	;;
+    save) 
+	[[ -e ~/.config/gnome-layout-manager ]] || mkdir ~/.config/gnome-layout-manager
+	dconf dump /org/gnome/desktop/ > ~/.config/gnome-layout-manager/dconf.txt
+	gsettings get org.gnome.shell enabled-extensions > ~/.config/gnome-layout-manager/extensions.txt
+	if [[ $ZENITY == true ]]; then
+		zenity --info --text "Layout saved in ~/.config/gnome-layout-manager/"
+		else
+		echo -e "Layout saved in ~/.config/gnome-layout-manager/"
+	fi;
+	;;
+    load) 
+	dconf load /org/gnome/desktop/ < ~/.config/gnome-layout-manager/dconf.txt
+	gsettings set org.gnome.shell enabled-extensions "$(cat ~/.config/gnome-layout-manager/extensions.txt)"	
+	if [[ $ZENITY == true ]]; then
+		zenity --info --text "Layout loaded from ~/.config/gnome-layout-manager/"
+		else
+		echo -e "Layout loaded from ~/.config/gnome-layout-manager/"
+	fi;
 	;;
   esac
