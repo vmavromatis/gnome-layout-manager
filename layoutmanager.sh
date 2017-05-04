@@ -17,6 +17,7 @@
 #   27/04/2017 - V1.8 : Added zenity dialogs (thanks to @JackHack96), added AppIndicator to go with TopIcons according to issue#2, made wgets verbose
 #   27/04/2017 - V1.9 : Renamed MacOSX to macOS, removed dropdown arrows from windows layout
 #   2/5/2017   - V2.0 : Added themes for Windows/macOS, added vanilla layout, save/load function
+#   4/5/2017   - V2.1 : Fixed save/load function, added wallpapers
 # -------------------------------------------
 
 ZENITY=true
@@ -84,7 +85,7 @@ else
         "Load") declare -a arr=(); shift; LAYOUT="load"; shift; ;;
         "Unity layout") declare -a arr=("307" "1031" "19" "744" "2" "615" "723"); shift; LAYOUT="unity"; shift; ;;
         "GNOME Vanilla") declare -a arr=(); LAYOUT="vanilla"; shift; ;;
-        "macOS layout") declare -a arr=("307" "1031" "615" "19"); LAYOUT="macosx"; shift; ;;
+        "macOS layout") declare -a arr=("307" "1031" "615" "19" "2"); LAYOUT="macosx"; shift; ;;
         "Windows 10 layout") declare -a arr=("1160" "608" "1031" "615" "800" "19"); LAYOUT="windows"; shift; ;;
         *) exit 1
     esac
@@ -97,7 +98,7 @@ do
     --save) declare -a arr=(); LAYOUT="save"; shift; ;;
     --load) declare -a arr=(); LAYOUT="load"; shift; ;;
     --windows) declare -a arr=("1160" "608" "1031" "615" "800" "19"); LAYOUT="windows"; shift; ;;
-    --macosx) declare -a arr=("307" "1031" "615" "19"); LAYOUT="macosx"; shift; ;;
+    --macosx) declare -a arr=("307" "1031" "615" "19" "2"); LAYOUT="macosx"; shift; ;;
     --unity) declare -a arr=("307" "1031" "19" "744" "2" "615" "723"); shift; LAYOUT="unity"; shift; ;;
     --vanilla) declare -a arr=(); shift; LAYOUT="vanilla"; shift; ;;
     *) echo "Unknown parameter $1"; shift; ;;
@@ -226,11 +227,18 @@ if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" ]]; then
 	done
 fi
 
+#Move schema files to local dir and compile
+[[ -e ~/.local/share/glib-2.0/schemas/ ]] || mkdir -p ~/.local/share/glib-2.0/schemas/
+export XDG_DATA_DIRS=~/.local/share:/usr/share
+find ~/.local/share/gnome-shell/extensions/ -name *gschema.xml -exec ln {} -sfn ~/.local/share/glib-2.0/schemas/ \;
+glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 
 #apply layout
   case $LAYOUT in
     windows) 
     	[[ -e ~/.themes ]] || mkdir ~/.themes
+	cd /tmp && wget https://static.pexels.com/photos/337685/pexels-photo-337685.png && mv pexels-photo-337685.png "$PICTURES_FOLDER"/wallpaper-windows.png
+	gsettings set org.gnome.desktop.background picture-uri file:///"$PICTURES_FOLDER"/wallpaper-windows.png
 	cd /tmp && wget -N https://github.com/B00merang-Project/Windows-10/archive/master.zip && unzip -o 	master.zip -d ~/.themes/ 
 	cd /tmp && wget -N https://github.com/B00merang-Project/Windows-10-Icons/archive/master.zip && unzip -o master.zip -d ~/.local/share/icons 
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/TopIcons@phocean.net/schemas/ set org.gnome.shell.extensions.topicons tray-pos 'Center'
@@ -258,6 +266,8 @@ fi
 	;;
     macosx) 
     	[[ -e ~/.themes ]] || mkdir ~/.themes
+	cd /tmp && wget https://upload.wikimedia.org/wikipedia/commons/9/9b/Aurora_-_panoramio.jpg && mv Aurora_-_panoramio.jpg "$PICTURES_FOLDER"/wallpaper-macos.jpg
+	gsettings set org.gnome.desktop.background picture-uri file:///"$PICTURES_FOLDER"/wallpaper-macos.jpg
 	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz && tar -xvf Gnome-OSX-II-NT-2-5-1.tar.xz -C ~/.themes/ 
 	cd /tmp && wget -N https://github.com/keeferrourke/la-capitaine-icon-theme/archive/master.zip && unzip -o master.zip -d ~/.local/share/icons && mv ~/.local/share/icons/la-capitaine-icon-theme-master ~/.local/share/icons/La-Capitaine
 	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1493629910/Human.zip && unzip -o Human.zip -d ~/.themes/ 
@@ -275,6 +285,7 @@ fi
 	gnome-shell-extension-tool -e TopIcons@phocean.net
 	gnome-shell-extension-tool -e dash-to-dock@micxgx.gmail.com
 	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
+	gnome-shell-extension-tool -e Move_Clock@rmy.pobox.com
 	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
 	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
 	gsettings set org.gnome.desktop.interface icon-theme "La-Capitaine"
@@ -324,8 +335,20 @@ fi
 	;;
     save) 
 	[[ -e ~/.config/gnome-layout-manager ]] || mkdir ~/.config/gnome-layout-manager
-	dconf dump /org/gnome/desktop/ > ~/.config/gnome-layout-manager/dconf.txt
-	gsettings get org.gnome.shell enabled-extensions > ~/.config/gnome-layout-manager/extensions.txt
+	#dconf dump /org/gnome/desktop/ > ~/.config/gnome-layout-manager/dconf.txt
+	#gsettings get org.gnome.shell enabled-extensions > ~/.config/gnome-layout-manager/extensions.txt
+	rm ~/.config/gnome-layout-manager/backup.txt #remove old file
+	set -x
+	for schema in $(gsettings list-schemas | grep 'org.gnome.shell\|org.gnome.desktop')
+	do
+	    for key in $(gsettings list-keys $schema)
+	    do
+		value="$(gsettings get $schema $key)"
+		echo gsettings set $schema $key $(printf '"')$value$(printf '"') >> ~/.config/gnome-layout-manager/backup.txt 
+	    done
+	done
+	set +x
+	
 	if [[ $ZENITY == true ]]; then
 		zenity --info --text "Layout saved in ~/.config/gnome-layout-manager/"
 		else
@@ -333,8 +356,11 @@ fi
 	fi;
 	;;
     load) 
-	dconf load /org/gnome/desktop/ < ~/.config/gnome-layout-manager/dconf.txt
-	gsettings set org.gnome.shell enabled-extensions "$(cat ~/.config/gnome-layout-manager/extensions.txt)"	
+	#dconf load /org/gnome/desktop/ < ~/.config/gnome-layout-manager/dconf.txt
+	#gsettings set org.gnome.shell enabled-extensions "$(cat ~/.config/gnome-layout-manager/extensions.txt)"	
+
+	bash -x ~/.config/gnome-layout-manager/backup.txt	
+		
 	if [[ $ZENITY == true ]]; then
 		zenity --info --text "Layout loaded from ~/.config/gnome-layout-manager/"
 		else
