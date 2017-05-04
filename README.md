@@ -51,7 +51,7 @@ Extensions:
 - User Themes
 
 Theme:
-- Windows-10 (GTK+Shell+Icons) by [@B00merang-Project](https://github.com/B00merang-Project), Licence: GPLv3
+- [Windows-10](https://github.com/B00merang-Project/Windows-10) (GTK+Shell+Icons) by [@B00merang-Project](https://github.com/B00merang-Project), Licence: GPLv3
 - Wallpaper: [Blue Dark Blue Flat Windows](https://www.pexels.com/photo/blue-dark-blue-flat-windows-337685/) (License: [Creative Commons 0 Licence](https://creativecommons.org/publicdomain/zero/1.0/), Author: [Santiago Paz](https://www.pexels.com/u/santiago-paz-109124/)) 
 
 ## macOS
