@@ -33,6 +33,7 @@ Extensions:
 - User Themes
 - Hide Activities
 - Frippery Move Clock
+- Pixel Saver
 
 Theme:
 - [United (GTK+Shell+Wallpaper)](https://www.gnome-look.org/p/1174889) by [@godlyranchdressing](https://github.com/godlyranchdressing) Licence: GPLv2
