@@ -4,7 +4,7 @@
 # GNOME Layout Manager
 
 ### _New feature_: Due to many people asking me, I added a Save/Load function. It's still experimental and a bit slow but should work. It iterates through all gsettings and saves them on a text file in ```~/.config/gnome-layout-manager```  
-![Menu](http://i.imgur.com/i5fR098.png)
+<img src="http://i.imgur.com/i5fR098.png" width="600" align="middle">
 
 A bash script that batch installs and tweaks GNOME extensions as well as GTK/Shell themes. There are currently three options available: Unity, Windows and macOS.
 
