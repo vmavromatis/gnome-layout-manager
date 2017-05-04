@@ -263,6 +263,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	gnome-shell-extension-tool -e dash-to-panel@jderose9.github.com
 	gnome-shell-extension-tool -e gnomenu@panacier.gmail.com
 	gnome-shell --replace &
+	echo -e "Gnome shell restarting, this may take some time. After it restarts, you may close the terminal. If you are experiencing any issues, enter Alt+F2 and type 'r' to restart X."
 	;;
     macosx) 
     	[[ -e ~/.themes ]] || mkdir ~/.themes
@@ -293,6 +294,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "Human"
 	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"	
 	gnome-shell --replace &
+	echo -e "Gnome shell restarting, this may take some time. After it restarts, you may close the terminal. If you are experiencing any issues, enter Alt+F2 and type 'r' to restart X."
 	;;
     unity) 
 	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'
@@ -325,13 +327,15 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
 	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"	
 	gnome-shell --replace &
+	echo -e "Gnome shell restarting, this may take some time. After it restarts, you may close the terminal. If you are experiencing any issues, enter Alt+F2 and type 'r' to restart X."
 	;;
     vanilla) 
 	gsettings set org.gnome.desktop.interface gtk-theme "Adwaita"
 	gsettings set org.gnome.desktop.interface icon-theme "Adwaita"
 	gsettings set org.gnome.desktop.interface cursor-theme "Adwaita"
 	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
-	gnome-shell --replace &
+	gsettings set org.gnome.desktop.background picture-uri file:///usr/share/backgrounds/gnome/adwaita-morning.jpg
+	echo -e "Gnome shell restarting, this may take some time. After it restarts, you may close the terminal. If you are experiencing any issues, enter Alt+F2 and type 'r' to restart X."
 	;;
     save) 
 	[[ -e ~/.config/gnome-layout-manager ]] || mkdir ~/.config/gnome-layout-manager
