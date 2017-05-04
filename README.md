@@ -52,7 +52,7 @@ Extensions:
 
 Theme:
 - Windows-10 (GTK+Shell+Icons) by [@B00merang-Project](https://github.com/B00merang-Project), Licence: GPLv3
-- Wallpaper: Blue Dark Blue Flat Windows (License: [Creative Commons 0 Licence](https://creativecommons.org/publicdomain/zero/1.0/), Author: [Santiago Paz](https://www.pexels.com/u/santiago-paz-109124/)) 
+- Wallpaper: [Blue Dark Blue Flat Windows](https://www.pexels.com/photo/blue-dark-blue-flat-windows-337685/) (License: [Creative Commons 0 Licence](https://creativecommons.org/publicdomain/zero/1.0/), Author: [Santiago Paz](https://www.pexels.com/u/santiago-paz-109124/)) 
 
 ## macOS
 
@@ -70,7 +70,7 @@ Theme:
 - [Gnome-OSX-II-NT](https://www.gnome-look.org/p/1171688/) (GTK) by [@PAULXFCE](https://www.gnome-look.org/member/455718/), Licence: [Creative Commons](https://creativecommons.org/licenses/by-sa/3.0/) 
 - [Human](https://www.gnome-look.org/p/1171095/) (Shell) by [@UMAYANGA](https://www.gnome-look.org/member/434822/) Licence: GPLv3
 - [La-Capitaine icons](https://github.com/keeferrourke/la-capitaine-icon-theme) by [@keeferrourke](https://github.com/keeferrourke)
-- Wallpaper: Aurora (License: [Creative Commons Attribution-ShareAlike 3.0 Unported](https://creativecommons.org/licenses/by-sa/3.0/), Author: [denbol](http://www.panoramio.com/photo/9384842)) 
+- Wallpaper: [Aurora](http://www.panoramio.com/photo/9384842) (License: [Creative Commons Attribution-ShareAlike 3.0 Unported](https://creativecommons.org/licenses/by-sa/3.0/), Author: [denbol](http://www.panoramio.com/photo/9384842)) 
 
 ### FAQ: 
 
