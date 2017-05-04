@@ -42,7 +42,7 @@ Theme:
 ## Windows
 
 Preview: 
-![Windows](http://i.imgur.com/W5NIINx.png)
+![Windows](http://i.imgur.com/c4EY20U.png)
 
 Extensions:
 - Dash to panel
