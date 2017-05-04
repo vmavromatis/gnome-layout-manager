@@ -339,20 +339,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	;;
     save) 
 	[[ -e ~/.config/gnome-layout-manager ]] || mkdir ~/.config/gnome-layout-manager
-	#dconf dump /org/gnome/desktop/ > ~/.config/gnome-layout-manager/dconf.txt
-	#gsettings get org.gnome.shell enabled-extensions > ~/.config/gnome-layout-manager/extensions.txt
-	rm ~/.config/gnome-layout-manager/backup.txt #remove old file
-	set -x
-	for schema in $(gsettings list-schemas | grep 'org.gnome.shell\|org.gnome.desktop')
-	do
-	    for key in $(gsettings list-keys $schema)
-	    do
-		value="$(gsettings get $schema $key)"
-		echo gsettings set $schema $key $(printf '"')$value$(printf '"') >> ~/.config/gnome-layout-manager/backup.txt 
-	    done
-	done
-	set +x
-	
+	dconf dump /org/gnome/ > ~/.config/gnome-layout-manager/backup.txt
 	if [[ $ZENITY == true ]]; then
 		zenity --info --text "Layout saved in ~/.config/gnome-layout-manager/"
 		else
@@ -360,10 +347,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	fi;
 	;;
     load) 
-	#dconf load /org/gnome/desktop/ < ~/.config/gnome-layout-manager/dconf.txt
-	#gsettings set org.gnome.shell enabled-extensions "$(cat ~/.config/gnome-layout-manager/extensions.txt)"	
-
-	bash -x ~/.config/gnome-layout-manager/backup.txt	
+	dconf load /org/gnome/ < ~/.config/gnome-layout-manager/backup.txt
 	gnome-shell --replace &
 
 	if [[ $ZENITY == true ]]; then
