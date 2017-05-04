@@ -360,7 +360,8 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	#gsettings set org.gnome.shell enabled-extensions "$(cat ~/.config/gnome-layout-manager/extensions.txt)"	
 
 	bash -x ~/.config/gnome-layout-manager/backup.txt	
-		
+	gnome-shell --replace &
+
 	if [[ $ZENITY == true ]]; then
 		zenity --info --text "Layout loaded from ~/.config/gnome-layout-manager/"
 		else
