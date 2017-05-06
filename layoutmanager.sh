@@ -64,8 +64,8 @@ LAYOUT=""
 if [[ ${#} -eq 0 && $ZENITY == false ]]; then
     echo "Downloads and installs GNOME extensions from Gnome Shell Extensions site https://extensions.gnome.org/"
     echo "Parameters are :"
-    echo "  --save                  Save current settings (dconf and extensions)"
-    echo "  --load                  Load dconf and extensions"
+    echo "  --save                  Save current settings (all gsettings in /org/gnome/) to ~/.config/gnome-layout-manager/"
+    echo "  --load                  Load settings (Please save your work as this may crash your gnome-shell)"
     echo "  --windows               Windows 10 layout (panel and no topbar)"
     echo "  --macosx                macOS layout (bottom dock /w autohide + topbar)"
     echo "  --unity                 Unity layout (left dock + topbar)"
@@ -73,8 +73,8 @@ if [[ ${#} -eq 0 && $ZENITY == false ]]; then
     exit 1
 else
     ANSWER=$(zenity --list --width=800 --height=400 --text "Please select the layout you want" --column "Option" --column "Details" \
-    "Save" "Save current settings (dconf and extensions) to ~/.config/gnome-layout-manager/"\
-    "Load" "Load dconf and extensions"\
+    "Save" "Save current settings (all gsettings in /org/gnome/) to ~/.config/gnome-layout-manager/"\
+    "Load" "Load settings (Please save your work as this may crash your gnome-shell)"\
     " " " "\
     "Unity layout" "(left dock + topbar)" \
     "GNOME Vanilla" "(Adwaita theme + disable all extensions)" \
@@ -364,7 +364,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	#gsettings set org.gnome.shell enabled-extensions "$(cat ~/.config/gnome-layout-manager/extensions.txt)"	
 
 	bash -x ~/.config/gnome-layout-manager/backup.txt	
-	gnome-shell --replace &
+	gnome-shell --replace&
 
 	if [[ $ZENITY == true ]]; then
 		zenity --info --text "Layout loaded from ~/.config/gnome-layout-manager/"
