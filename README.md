@@ -3,7 +3,10 @@
 
 # GNOME Layout Manager
 
-### _New feature_: Due to many people asking me, I added a Save/Load function. It's still experimental and a bit slow but should work. It iterates through all gsettings and saves them on a text file in ```~/.config/gnome-layout-manager```  
+##### Update 6/5/2017: I'm trying to make Global menu and Pixel saver work together for the Unity layout. This is where I got so far (good fonts and padding but wrong order on text/icons). Any help/advice feel free to open an issue/pull request.
+![](http://i.imgur.com/exAXsQQ.png)
+
+#### Main menu:  
 <img src="http://i.imgur.com/i5fR098.png" width="600" align="middle">
 
 A bash script that batch installs and tweaks GNOME extensions as well as GTK/Shell themes. There are currently three options available: Unity, Windows and macOS.
@@ -21,6 +24,8 @@ Icons: ```~/.local/share/icons```
 Schemas: ```~/.local/share/glib-2.0/schemas```  
 Wallpaper: ```~/Pictures``` (or as set by xdg-user-dir)  
 Backup: ```~/.config/gnome-layout-manager```  
+
+
 
 ## Unity
 
