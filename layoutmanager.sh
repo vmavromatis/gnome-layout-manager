@@ -17,7 +17,8 @@
 #   27/04/2017 - V1.8 : Added zenity dialogs (thanks to @JackHack96), added AppIndicator to go with TopIcons according to issue#2, made wgets verbose
 #   27/04/2017 - V1.9 : Renamed MacOSX to macOS, removed dropdown arrows from windows layout
 #   2/5/2017   - V2.0 : Added themes for Windows/macOS, added vanilla layout, save/load function
-#   4/5/2017   - V2.1 : Fixed save/load function, added wallpapers
+#   4/5/2017   - V2.1 : Fixed save/load function, added wallpapers, reverted commit (changed dconf back to gsettings loop)
+#   7/5/2017   - V2.2 : Some much needed housekeeping, check if extensions/themes are installed, changed theme dir to the official one, removed local schemadirs, arguments work again
 # -------------------------------------------
 
 ZENITY=true
@@ -64,31 +65,33 @@ LAYOUT=""
 if [[ ${#} -eq 0 && $ZENITY == false ]]; then
     echo "Downloads and installs GNOME extensions from Gnome Shell Extensions site https://extensions.gnome.org/"
     echo "Parameters are :"
-    echo "  --save                  Save current settings (dconf and extensions)"
-    echo "  --load                  Load dconf and extensions"
+    echo "  --save                  Save current settings (all gsettings in /org/gnome/) to ~/.config/gnome-layout-manager/"
+    echo "  --load                  Load settings (Please save your work as this may crash your gnome-shell)"
     echo "  --windows               Windows 10 layout (panel and no topbar)"
     echo "  --macosx                macOS layout (bottom dock /w autohide + topbar)"
     echo "  --unity                 Unity layout (left dock + topbar)"
     echo "  --vanilla               GNOME Vanilla (Adwaita theme + disable all extensions)"
     exit 1
 else
-    ANSWER=$(zenity --list --width=800 --height=400 --text "Please select the layout you want" --column "Option" --column "Details" \
-    "Save" "Save current settings (dconf and extensions) to ~/.config/gnome-layout-manager/"\
-    "Load" "Load dconf and extensions"\
-    " " " "\
-    "Unity layout" "(left dock + topbar)" \
-    "GNOME Vanilla" "(Adwaita theme + disable all extensions)" \
-    "macOS layout" "(bottom dock + topbar)" \
-    "Windows 10 layout" "(bottom panel and no topbar)")
-    case $ANSWER in
-        "Save") declare -a arr=(); shift; LAYOUT="save"; shift; ;;
-        "Load") declare -a arr=(); shift; LAYOUT="load"; shift; ;;
-        "Unity layout") declare -a arr=("307" "1031" "19" "744" "2" "615" "723"); shift; LAYOUT="unity"; shift; ;;
-        "GNOME Vanilla") declare -a arr=(); LAYOUT="vanilla"; shift; ;;
-        "macOS layout") declare -a arr=("307" "1031" "615" "19" "2"); LAYOUT="macosx"; shift; ;;
-        "Windows 10 layout") declare -a arr=("1160" "608" "1031" "615" "800" "19"); LAYOUT="windows"; shift; ;;
-        *) exit 1
-    esac
+    if [[ $# -eq 0 ]]; then   #if no argument given, start zenity
+	    ANSWER=$(zenity --list --width=800 --height=400 --text "Please select the layout you want" --column "Option" --column "Details" \
+	    "Save" "Save current settings (all gsettings in /org/gnome/) to ~/.config/gnome-layout-manager/"\
+	    "Load" "Load settings (Please save your work as this may crash your gnome-shell)"\
+	    " " " "\
+	    "Unity layout" "(left dock + topbar)" \
+	    "GNOME Vanilla" "(Adwaita theme + disable all extensions)" \
+	    "macOS layout" "(bottom dock + topbar)" \
+	    "Windows 10 layout" "(bottom panel and no topbar)")
+	    case $ANSWER in
+		"Save") declare -a arr=(); shift; LAYOUT="save"; shift; ;;
+		"Load") declare -a arr=(); shift; LAYOUT="load"; shift; ;;
+		"Unity layout") declare -a arr=("307" "1031" "19" "744" "2" "615" "723"); shift; LAYOUT="unity"; shift; ;;
+		"GNOME Vanilla") declare -a arr=(); LAYOUT="vanilla"; shift; ;;
+		"macOS layout") declare -a arr=("307" "1031" "615" "19" "2"); LAYOUT="macosx"; shift; ;;
+		"Windows 10 layout") declare -a arr=("1160" "608" "1031" "615" "800" "19"); LAYOUT="windows"; shift; ;;
+		*) exit 1
+	    esac
+    fi
 fi
 
 # iterate thru parameters
@@ -109,13 +112,10 @@ done
 if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" || $LAYOUT == "vanilla" ]]; then
 	echo "Layout selected: $LAYOUT"
 	echo "Disabling all current extensions"
-	array=($(gsettings get org.gnome.shell enabled-extensions | sed -e 's/[;,()'\'']/ /g;s/  */ /g' | tr -d '[]'))
 
-	for each in "${array[@]}"
-	do
-	  # echo "gnome-shell-extension-tool -d $each"
-	  gnome-shell-extension-tool -d "$each"
-	done
+	gsettings set org.gnome.shell enabled-extensions []
+    	[[ -e ~/.local/share/themes ]] || mkdir -p ~/.local/share/themes  #create theme and icon directory
+	[[ -e ~/.local/share/icons ]] || mkdir -p ~/.local/share/icons 
 fi 
 
 #install all extensions from array
@@ -153,7 +153,8 @@ if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" ]]; then
 		if [ ! -s "${TMP_DESC}" ];
 		then
 		  echo "Extension with ID ${EXTENSION_ID} is not available from Gnome Shell Extension site."
-	
+		elif [[ -d ~/.local/share/gnome-shell/extensions/${EXTENSION_UUID} ]]; then
+		  echo "Extension already installed."
 		else
 		# else, if installation mode
 		#elif [ "${ACTION}" = "install" ];
@@ -206,6 +207,7 @@ if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" ]]; then
 		    # success message
 		    echo "Gnome Shell version is ${GNOME_VERSION}."
 		    echo "Extension ${EXTENSION_NAME} version ${VERSION_AVAILABLE} has been installed in ${INSTALL_MODE} mode (Id ${EXTENSION_ID}, Uuid ${EXTENSION_UUID})"
+		    zenity --info --text "EXT_NAME: ${EXTENSION_NAME}\nEXT_UUID: ${EXTENSION_UUID}\nEXT_LIST:${EXTENSION_LIST}}"
 		    #echo "Restart Gnome Shell to take effect."
 
 		  fi
@@ -236,102 +238,111 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 #apply layout
   case $LAYOUT in
     windows) 
-    	[[ -e ~/.themes ]] || mkdir ~/.themes
-	cd /tmp && wget https://static.pexels.com/photos/337685/pexels-photo-337685.png && mv pexels-photo-337685.png "$PICTURES_FOLDER"/wallpaper-windows.png
+	if [[ -e ~/.themes/Windows-10-master ]]; then 
+		mv -v ~/.themes/Windows-10-master/ ~/.local/share/themes/Windows-10-master/    #move old files
+	elif [[ ! -d ~/.local/share/themes/Windows-10-master ]]; then 
+		cd /tmp && wget -N https://github.com/B00merang-Project/Windows-10/archive/master.zip && unzip -o master.zip -d ~/.local/share/themes/
+	fi
+	if [[ ! -f "$PICTURES_FOLDER"/wallpaper-windows.png ]]; then 
+		cd /tmp && wget https://static.pexels.com/photos/337685/pexels-photo-337685.png && mv pexels-photo-337685.png "$PICTURES_FOLDER"/wallpaper-windows.png
+	fi
 	gsettings set org.gnome.desktop.background picture-uri file:///"$PICTURES_FOLDER"/wallpaper-windows.png
-	cd /tmp && wget -N https://github.com/B00merang-Project/Windows-10/archive/master.zip && unzip -o 	master.zip -d ~/.themes/ 
-	cd /tmp && wget -N https://github.com/B00merang-Project/Windows-10-Icons/archive/master.zip && unzip -o master.zip -d ~/.local/share/icons 
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/TopIcons@phocean.net/schemas/ set org.gnome.shell.extensions.topicons tray-pos 'Center'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/TopIcons@phocean.net/schemas/ set org.gnome.shell.extensions.topicons tray-order '2'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com/schemas set org.gnome.shell.extensions.dash-to-panel panel-position 'BOTTOM'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com/schemas set org.gnome.shell.extensions.dash-to-panel location-clock 'STATUSRIGHT'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu disable-activities-hotcorner 'true'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu hide-panel-view 'true'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu hide-panel-apps 'true'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu panel-menu-label-text ["'Start'"]
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu disable-panel-menu-keyboard 'true'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu hide-shortcuts 'true'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/gnomenu@panacier.gmail.com/schemas set org.gnome.shell.extensions.gnomenu hide-useroptions 'true'
+	if [[ ! -d ~/.local/share/icons/Windows-10-Icons-master  ]]; then 
+	cd /tmp && wget -N  https://github.com/B00merang-Project/Windows-10-Icons/archive/master.zip && unzip -o master.zip -d ~/.local/share/icons/
+	fi	
+	gsettings set org.gnome.shell.extensions.topicons tray-pos 'Center'
+	gsettings set org.gnome.shell.extensions.topicons tray-order '2'
+	gsettings set org.gnome.shell.extensions.dash-to-panel panel-position 'BOTTOM'
+	gsettings set org.gnome.shell.extensions.dash-to-panel location-clock 'STATUSRIGHT'
+	gsettings set org.gnome.shell.extensions.gnomenu disable-activities-hotcorner 'true'
+	gsettings set org.gnome.shell.extensions.gnomenu hide-panel-view 'true'
+	gsettings set org.gnome.shell.extensions.gnomenu hide-panel-apps 'true'
+	gsettings set org.gnome.shell.extensions.gnomenu panel-menu-label-text ["''"]
+	gsettings set org.gnome.shell.extensions.gnomenu disable-panel-menu-keyboard 'true'
+	gsettings set org.gnome.shell.extensions.gnomenu hide-shortcuts 'true'
+	gsettings set org.gnome.shell.extensions.gnomenu hide-useroptions 'true'
 	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 	gsettings set org.gnome.desktop.interface icon-theme "Windows-10-Icons-master"
 	gsettings set org.gnome.desktop.interface gtk-theme "Windows-10-master"
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "Windows-10-master"
-	gnome-shell-extension-tool -e TopIcons@phocean.net
-	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
-	gnome-shell-extension-tool -e remove-dropdown-arrows@mpdeimos.com
-	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
-	gnome-shell-extension-tool -e dash-to-panel@jderose9.github.com
-	gnome-shell-extension-tool -e gnomenu@panacier.gmail.com
+	gsettings set org.gnome.shell.extensions.user-theme name "Windows-10-master"
+	gsettings set org.gnome.shell enabled-extensions "['TopIcons@phocean.net', 'appindicatorsupport@rgcjonas.gmail.com', 'remove-dropdown-arrows@mpdeimos.com', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'dash-to-panel@jderose9.github.com', 'gnomenu@panacier.gmail.com']"
 	gnome-shell --replace &
+	echo -e "Gnome shell restarting, this may take some time. After it restarts, you may close the terminal. If you are experiencing any issues, enter Alt+F2 and type 'r' to restart X."
 	;;
     macosx) 
-    	[[ -e ~/.themes ]] || mkdir ~/.themes
-	cd /tmp && wget https://upload.wikimedia.org/wikipedia/commons/9/9b/Aurora_-_panoramio.jpg && mv Aurora_-_panoramio.jpg "$PICTURES_FOLDER"/wallpaper-macos.jpg
+	if [[ -e ~/.themes/Gnome-OSX-II-NT-2-5-1 ]]; then 
+		mv -v ~/.themes/Gnome-OSX-II-NT-2-5-1/ ~/.local/share/themes/Gnome-OSX-II-NT-2-5-1/    #move old files
+	elif [[ ! -d ~/.local/share/themes/Gnome-OSX-II-NT-2-5-1 ]]; then 
+		cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz && tar -xvf Gnome-OSX-II-NT-2-5-1.tar.xz -C ~/.local/share/themes/
+	fi
+	if [[ ! -f "$PICTURES_FOLDER"/wallpaper-macos.jpg ]]; then 
+		cd /tmp && wget https://upload.wikimedia.org/wikipedia/commons/9/9b/Aurora_-_panoramio.jpg && mv Aurora_-_panoramio.jpg "$PICTURES_FOLDER"/wallpaper-macos.jpg
+	fi
 	gsettings set org.gnome.desktop.background picture-uri file:///"$PICTURES_FOLDER"/wallpaper-macos.jpg
-	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz && tar -xvf Gnome-OSX-II-NT-2-5-1.tar.xz -C ~/.themes/ 
-	cd /tmp && wget -N https://github.com/keeferrourke/la-capitaine-icon-theme/archive/master.zip && unzip -o master.zip -d ~/.local/share/icons && mv ~/.local/share/icons/la-capitaine-icon-theme-master ~/.local/share/icons/La-Capitaine
-	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1493629910/Human.zip && unzip -o Human.zip -d ~/.themes/ 
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock dock-position 'BOTTOM'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock intellihide 'false'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock extend-height 'false'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock background-opacity '0.4'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock background-color '#FFFFFF'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock dock-fixed 'true'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock show-apps-at-top 'true'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock show-running 'true'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock apply-custom-theme 'false'
-	gnome-shell-extension-tool -e dash-to-dock@micxgx.gmail.com
-	gnome-shell-extension-tool -e TopIcons@phocean.net
-	gnome-shell-extension-tool -e dash-to-dock@micxgx.gmail.com
-	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
-	gnome-shell-extension-tool -e Move_Clock@rmy.pobox.com
-	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
+	if [[ ! -d ~/.local/share/icons/La-Capitaine ]]; then 
+		cd /tmp && wget -N https://github.com/keeferrourke/la-capitaine-icon-theme/archive/master.zip && unzip -o master.zip -d ~/.local/share/icons && mv ~/.local/share/icons/la-capitaine-icon-theme-master ~/.local/share/icons/La-Capitaine
+	fi
+	if [[ -e ~/.themes/Human ]]; then 
+		mv -v ~/.themes/Human/ ~/.local/share/themes/Human/    #move old files
+	elif [[ ! -d ~/.local/share/themes/Human ]]; then 
+	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1493629910/Human.zip && unzip -o Human.zip -d ~/.local/share/themes/
+	fi
+	gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'BOTTOM'
+	gsettings set org.gnome.shell.extensions.dash-to-dock intellihide 'false'
+	gsettings set org.gnome.shell.extensions.dash-to-dock extend-height 'false'
+	gsettings set org.gnome.shell.extensions.dash-to-dock background-opacity '0.4'
+	gsettings set org.gnome.shell.extensions.dash-to-dock background-color '#FFFFFF'
+	gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed 'true'
+	gsettings set org.gnome.shell.extensions.dash-to-dock click-action 'minimize'
+	gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top 'true'
+	gsettings set org.gnome.shell.extensions.dash-to-dock show-running 'true'
+	gsettings set org.gnome.shell.extensions.dash-to-dock apply-custom-theme 'false'
 	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
 	gsettings set org.gnome.desktop.interface icon-theme "La-Capitaine"
 	gsettings set org.gnome.desktop.interface gtk-theme "Gnome-OSX-II-NT-2-5-1"
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "Human"
-	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"	
+	gsettings set org.gnome.shell.extensions.user-theme name "Human"
+	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"
+	gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'appindicatorsupport@rgcjonas.gmail.com', 'Move_Clock@rmy.pobox.com', 'user-theme@gnome-shell-extensions.gcampax.github.com']"
 	gnome-shell --replace &
+	echo -e "Gnome shell restarting, this may take some time. After it restarts, you may close the terminal. If you are experiencing any issues, enter Alt+F2 and type 'r' to restart X."
 	;;
     unity) 
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock intellihide 'false'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock background-opacity '0.7'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock background-color '#2C001E'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock dock-fixed 'true'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock extend-height 'true'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock show-running 'true'
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/schemas set org.gnome.shell.extensions.dash-to-dock show-apps-at-top 'true'
-	gnome-shell-extension-tool -e dash-to-dock@micxgx.gmail.com
-	gnome-shell-extension-tool -e TopIcons@phocean.net
-	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
-	gnome-shell-extension-tool -e Hide_Activities@shay.shayel.org
-	gnome-shell-extension-tool -e Move_Clock@rmy.pobox.com
-	gnome-shell-extension-tool -e appindicatorsupport@rgcjonas.gmail.com
-	gnome-shell-extension-tool -e pixel-saver@deadalnix.me
-	[[ -e ~/.themes ]] || mkdir ~/.themes
-	cd /tmp && wget https://github.com/godlyranchdressing/United-GNOME/raw/master/United-Latest.tar.gz && tar -xvzf United-Latest.tar.gz -C ~/.themes/ && mv ~/.themes/United-Latest/* ~/.themes
+	gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'
+	gsettings set org.gnome.shell.extensions.dash-to-dock intellihide 'false'
+	gsettings set org.gnome.shell.extensions.dash-to-dock background-opacity '0.7'
+	gsettings set org.gnome.shell.extensions.dash-to-dock background-color '#2C001E'
+	gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed 'true'
+	gsettings set org.gnome.shell.extensions.dash-to-dock extend-height 'true'
+	gsettings set org.gnome.shell.extensions.dash-to-dock show-running 'true'
+	gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top 'true'
+	if [[ -e ~/.themes/United ]]; then 
+		mv -v ~/.themes/United* ~/.local/share/themes/    #move old files
+	elif [[ ! -d ~/.local/share/themes/United ]]; then 
+	cd /tmp && wget https://github.com/godlyranchdressing/United-GNOME/raw/master/United-Latest.tar.gz && tar -xvzf United-Latest.tar.gz -C /tmp/ && mv /tmp/United-Latest/* ~/.local/share/themes/
+	fi
+	if [[ ! -f "$PICTURES_FOLDER"/wallpaper-united.jpg ]]; then 
 	cd /tmp && wget https://raw.githubusercontent.com/godlyranchdressing/United-GNOME/master/Wallpaper.png && mv Wallpaper.png "$PICTURES_FOLDER"/wallpaper-united.png
-	[[ -e ~/.local/share/icons ]] || mkdir ~/.local/share/icons
-	wget https://launchpad.net/ubuntu/+archive/primary/+files/humanity-icon-theme_0.6.13.tar.xz && tar --xz -xvf humanity-icon-theme_0.6.13.tar.xz -C ~/.local/share/icons
-	mv ~/.local/share/icons/humanity-icon-theme-0.6.13/* ~/.local/share/icons
-	rmdir ~/.local/share/icons/humanity-icon-theme-0.6.13/
+	gsettings set org.gnome.desktop.background picture-uri file:///"$PICTURES_FOLDER"/wallpaper-united.png
+	fi
+	if [[ ! -d ~/.local/share/icons/Humanity ]]; then 
+	wget https://launchpad.net/ubuntu/+archive/primary/+files/humanity-icon-theme_0.6.13.tar.xz && tar --xz -xvf humanity-icon-theme_0.6.13.tar.xz -C /tmp/ && mv /tmp/humanity-icon-theme-0.6.13/* ~/.local/share/icons
+	fi
 	gsettings set org.gnome.desktop.interface icon-theme "Humanity"
 	gsettings set org.gnome.desktop.interface gtk-theme "United"
-	gsettings --schemadir ~/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com/schemas set org.gnome.shell.extensions.user-theme name "United"
-	gsettings set org.gnome.desktop.background picture-uri file:///"$PICTURES_FOLDER"/wallpaper-united.png
-	gnome-shell-extension-tool -e user-theme@gnome-shell-extensions.gcampax.github.com
+	gsettings set org.gnome.shell.extensions.user-theme name "United"
 	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
 	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"	
+	gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'Hide_Activities@shay.shayel.org', 'Move_Clock@rmy.pobox.com', 'appindicatorsupport@rgcjonas.gmail.com', 'pixel-saver@deadalnix.me']"
 	gnome-shell --replace &
+	echo -e "Gnome shell restarting, this may take some time. After it restarts, you may close the terminal. If you are experiencing any issues, enter Alt+F2 and type 'r' to restart X."
 	;;
     vanilla) 
 	gsettings set org.gnome.desktop.interface gtk-theme "Adwaita"
 	gsettings set org.gnome.desktop.interface icon-theme "Adwaita"
 	gsettings set org.gnome.desktop.interface cursor-theme "Adwaita"
 	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
-	gnome-shell --replace &
+	gsettings set org.gnome.desktop.background picture-uri file:///usr/share/backgrounds/gnome/adwaita-morning.jpg
+	echo -e "Gnome shell restarting, this may take some time. After it restarts, you may close the terminal. If you are experiencing any issues, enter Alt+F2 and type 'r' to restart X."
 	;;
     save) 
 	[[ -e ~/.config/gnome-layout-manager ]] || mkdir ~/.config/gnome-layout-manager
@@ -349,7 +360,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	done
 	set +x
 	
-	if [[ $ZENITY == true ]]; then
+	if [[ $ZENITY == true && ${#} -ne 0 ]]; then
 		zenity --info --text "Layout saved in ~/.config/gnome-layout-manager/"
 		else
 		echo -e "Layout saved in ~/.config/gnome-layout-manager/"
@@ -360,8 +371,9 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	#gsettings set org.gnome.shell enabled-extensions "$(cat ~/.config/gnome-layout-manager/extensions.txt)"	
 
 	bash -x ~/.config/gnome-layout-manager/backup.txt	
-		
-	if [[ $ZENITY == true ]]; then
+	gnome-shell --replace&
+
+	if [[ $ZENITY == true && ${#} -ne 0 ]]; then
 		zenity --info --text "Layout loaded from ~/.config/gnome-layout-manager/"
 		else
 		echo -e "Layout loaded from ~/.config/gnome-layout-manager/"
