@@ -18,7 +18,7 @@
 #   27/04/2017 - V1.9 : Renamed MacOSX to macOS, removed dropdown arrows from windows layout
 #   2/5/2017   - V2.0 : Added themes for Windows/macOS, added vanilla layout, save/load function
 #   4/5/2017   - V2.1 : Fixed save/load function, added wallpapers, reverted commit (changed dconf back to gsettings loop)
-#   7/5/2017   - V2.2 : Some much needed housekeeping, check if extensions/themes are installed, changed theme dir to the official one, removed local schemadirs, arguments work again
+#   7/5/2017   - V2.2 : Housekeeping, check if extensions/themes are installed, changed theme dir to the official one, removed local schemadirs, arguments work again, temp hack for ext800
 # -------------------------------------------
 
 ZENITY=true
@@ -172,9 +172,14 @@ if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" ]]; then
 		    echo "${GNOME_VERSION}" >> "${TMP_VERSION}"
 		    VERSION_AVAILABLE=$(cat "${TMP_VERSION}" | sort -V | sed "1,/${GNOME_VERSION}/d" | head -n 1)
 		  fi
+		  
+		  
+		  if [[ ${EXTENSION_ID} -eq "800" ]]; then #Dirty hack for ext800 (temp)
+		  	VERSION_AVAILABLE="3.22"
+		  fi
 
 		  # if still no version is available, error message
-		  if [ "${VERSION_AVAILABLE}" = "" ]
+		  if [ "${VERSION_AVAILABLE}" = "" ]  
 		  then
 		    echo "Gnome Shell version is ${GNOME_VERSION}."
 		    echo "Extension ${EXTENSION_NAME} is not available for this version."
@@ -207,7 +212,6 @@ if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" ]]; then
 		    # success message
 		    echo "Gnome Shell version is ${GNOME_VERSION}."
 		    echo "Extension ${EXTENSION_NAME} version ${VERSION_AVAILABLE} has been installed in ${INSTALL_MODE} mode (Id ${EXTENSION_ID}, Uuid ${EXTENSION_UUID})"
-		    zenity --info --text "EXT_NAME: ${EXTENSION_NAME}\nEXT_UUID: ${EXTENSION_UUID}\nEXT_LIST:${EXTENSION_LIST}}"
 		    #echo "Restart Gnome Shell to take effect."
 
 		  fi
@@ -238,6 +242,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 #apply layout
   case $LAYOUT in
     windows) 
+   	gsettings set org.gnome.shell enabled-extensions "['TopIcons@phocean.net', 'appindicatorsupport@rgcjonas.gmail.com', 'remove-dropdown-arrows@mpdeimos.com', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'dash-to-panel@jderose9.github.com', 'gnomenu@panacier.gmail.com']"
 	if [[ -e ~/.themes/Windows-10-master ]]; then 
 		mv -v ~/.themes/Windows-10-master/ ~/.local/share/themes/Windows-10-master/    #move old files
 	elif [[ ! -d ~/.local/share/themes/Windows-10-master ]]; then 
@@ -265,11 +270,10 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	gsettings set org.gnome.desktop.interface icon-theme "Windows-10-Icons-master"
 	gsettings set org.gnome.desktop.interface gtk-theme "Windows-10-master"
 	gsettings set org.gnome.shell.extensions.user-theme name "Windows-10-master"
-	gsettings set org.gnome.shell enabled-extensions "['TopIcons@phocean.net', 'appindicatorsupport@rgcjonas.gmail.com', 'remove-dropdown-arrows@mpdeimos.com', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'dash-to-panel@jderose9.github.com', 'gnomenu@panacier.gmail.com']"
-	gnome-shell --replace &
-	echo -e "Gnome shell restarting, this may take some time. After it restarts, you may close the terminal. If you are experiencing any issues, enter Alt+F2 and type 'r' to restart X."
+	zenity --info --width=500 --height=200 --text "Layout applied successfully.\nIf you are experiencing any issues, please restart gnome-shell."
 	;;
     macosx) 
+   	gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'appindicatorsupport@rgcjonas.gmail.com', 'Move_Clock@rmy.pobox.com', 'user-theme@gnome-shell-extensions.gcampax.github.com']"
 	if [[ -e ~/.themes/Gnome-OSX-II-NT-2-5-1 ]]; then 
 		mv -v ~/.themes/Gnome-OSX-II-NT-2-5-1/ ~/.local/share/themes/Gnome-OSX-II-NT-2-5-1/    #move old files
 	elif [[ ! -d ~/.local/share/themes/Gnome-OSX-II-NT-2-5-1 ]]; then 
@@ -302,11 +306,10 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	gsettings set org.gnome.desktop.interface gtk-theme "Gnome-OSX-II-NT-2-5-1"
 	gsettings set org.gnome.shell.extensions.user-theme name "Human"
 	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"
-	gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'appindicatorsupport@rgcjonas.gmail.com', 'Move_Clock@rmy.pobox.com', 'user-theme@gnome-shell-extensions.gcampax.github.com']"
-	gnome-shell --replace &
-	echo -e "Gnome shell restarting, this may take some time. After it restarts, you may close the terminal. If you are experiencing any issues, enter Alt+F2 and type 'r' to restart X."
+	zenity --info --width=500 --height=200 --text "Layout applied successfully.\nIf you are experiencing any issues, please restart gnome-shell."
 	;;
     unity) 
+    gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'Hide_Activities@shay.shayel.org', 'Move_Clock@rmy.pobox.com', 'appindicatorsupport@rgcjonas.gmail.com', 'pixel-saver@deadalnix.me']"
 	gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'
 	gsettings set org.gnome.shell.extensions.dash-to-dock intellihide 'false'
 	gsettings set org.gnome.shell.extensions.dash-to-dock background-opacity '0.7'
@@ -320,10 +323,10 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	elif [[ ! -d ~/.local/share/themes/United ]]; then 
 	cd /tmp && wget https://github.com/godlyranchdressing/United-GNOME/raw/master/United-Latest.tar.gz && tar -xvzf United-Latest.tar.gz -C /tmp/ && mv /tmp/United-Latest/* ~/.local/share/themes/
 	fi
-	if [[ ! -f "$PICTURES_FOLDER"/wallpaper-united.jpg ]]; then 
+	if [[ ! -f "$PICTURES_FOLDER"/wallpaper-united.png ]]; then 
 	cd /tmp && wget https://raw.githubusercontent.com/godlyranchdressing/United-GNOME/master/Wallpaper.png && mv Wallpaper.png "$PICTURES_FOLDER"/wallpaper-united.png
-	gsettings set org.gnome.desktop.background picture-uri file:///"$PICTURES_FOLDER"/wallpaper-united.png
 	fi
+	gsettings set org.gnome.desktop.background picture-uri file:///"$PICTURES_FOLDER"/wallpaper-united.png
 	if [[ ! -d ~/.local/share/icons/Humanity ]]; then 
 	wget https://launchpad.net/ubuntu/+archive/primary/+files/humanity-icon-theme_0.6.13.tar.xz && tar --xz -xvf humanity-icon-theme_0.6.13.tar.xz -C /tmp/ && mv /tmp/humanity-icon-theme-0.6.13/* ~/.local/share/icons
 	fi
@@ -332,9 +335,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	gsettings set org.gnome.shell.extensions.user-theme name "United"
 	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
 	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"	
-	gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'Hide_Activities@shay.shayel.org', 'Move_Clock@rmy.pobox.com', 'appindicatorsupport@rgcjonas.gmail.com', 'pixel-saver@deadalnix.me']"
-	gnome-shell --replace &
-	echo -e "Gnome shell restarting, this may take some time. After it restarts, you may close the terminal. If you are experiencing any issues, enter Alt+F2 and type 'r' to restart X."
+	zenity --info --width=500 --height=200 --text "Layout applied successfully.\nIf you are experiencing any issues, please restart gnome-shell."
 	;;
     vanilla) 
 	gsettings set org.gnome.desktop.interface gtk-theme "Adwaita"
@@ -342,7 +343,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	gsettings set org.gnome.desktop.interface cursor-theme "Adwaita"
 	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 	gsettings set org.gnome.desktop.background picture-uri file:///usr/share/backgrounds/gnome/adwaita-morning.jpg
-	echo -e "Gnome shell restarting, this may take some time. After it restarts, you may close the terminal. If you are experiencing any issues, enter Alt+F2 and type 'r' to restart X."
+	zenity --info --width=500 --height=200 --text "Layout applied successfully.\nIf you are experiencing any issues, please restart gnome-shell."
 	;;
     save) 
 	[[ -e ~/.config/gnome-layout-manager ]] || mkdir ~/.config/gnome-layout-manager
@@ -371,7 +372,6 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	#gsettings set org.gnome.shell enabled-extensions "$(cat ~/.config/gnome-layout-manager/extensions.txt)"	
 
 	bash -x ~/.config/gnome-layout-manager/backup.txt	
-	gnome-shell --replace&
 
 	if [[ $ZENITY == true && ${#} -ne 0 ]]; then
 		zenity --info --text "Layout loaded from ~/.config/gnome-layout-manager/"
