@@ -3,8 +3,11 @@
 
 # GNOME Layout Manager
 
-### _New feature_: Due to many people asking me, I added a Save/Load function. It's still experimental and a bit slow but should work. It iterates through all gsettings and saves them on a text file in ```~/.config/gnome-layout-manager```  
-![Menu](http://i.imgur.com/i5fR098.png)
+##### Update 6/5/2017: I'm trying to make Global menu and Pixel saver work together for the Unity layout. This is where I got so far (good fonts and padding but wrong order on text/icons). Any help/advice feel free to open an issue/pull request.
+![](http://i.imgur.com/exAXsQQ.png)
+
+#### Main menu:  
+<img src="http://i.imgur.com/i5fR098.png" width="600" align="middle">
 
 A bash script that batch installs and tweaks GNOME extensions as well as GTK/Shell themes. There are currently three options available: Unity, Windows and macOS.
 
@@ -22,6 +25,8 @@ Schemas: ```~/.local/share/glib-2.0/schemas```
 Wallpaper: ```~/Pictures``` (or as set by xdg-user-dir)  
 Backup: ```~/.config/gnome-layout-manager```  
 
+
+
 ## Unity
 
 Preview: 
@@ -33,6 +38,7 @@ Extensions:
 - User Themes
 - Hide Activities
 - Frippery Move Clock
+- Pixel Saver
 
 Theme:
 - [United (GTK+Shell+Wallpaper)](https://www.gnome-look.org/p/1174889) by [@godlyranchdressing](https://github.com/godlyranchdressing) Licence: GPLv2
@@ -41,7 +47,7 @@ Theme:
 ## Windows
 
 Preview: 
-![Windows](http://i.imgur.com/W5NIINx.png)
+![Windows](http://i.imgur.com/c4EY20U.png)
 
 Extensions:
 - Dash to panel
@@ -51,7 +57,7 @@ Extensions:
 - User Themes
 
 Theme:
-- Windows-10 (GTK+Shell+Icons) by [@B00merang-Project](https://github.com/B00merang-Project), Licence: GPLv3
+- [Windows-10](https://github.com/B00merang-Project/Windows-10) (GTK+Shell+Icons) by [@B00merang-Project](https://github.com/B00merang-Project), Licence: GPLv3
 - Wallpaper: [Blue Dark Blue Flat Windows](https://www.pexels.com/photo/blue-dark-blue-flat-windows-337685/) (License: [Creative Commons 0 Licence](https://creativecommons.org/publicdomain/zero/1.0/), Author: [Santiago Paz](https://www.pexels.com/u/santiago-paz-109124/)) 
 
 ## macOS
