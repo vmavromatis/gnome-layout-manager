@@ -1,9 +1,8 @@
 ### Notice: This software is alpha and under development. Please use at your own risk.
 
+##### Coming soon: [Global-Menu](https://github.com/lestcape/Gnome-Global-AppMenu) (currently [conflicts](https://github.com/deadalnix/pixel-saver/issues/129) with Pixel Saver) and [HUD](https://github.com/p-e-w/plotinus) (currently [resolving](https://github.com/p-e-w/plotinus/issues/25) non-root installation). Feel free to open any issues/pull requests if you have any ideas.
 
 # GNOME Layout Manager
-
-##### Coming soon: [Global-Menu](https://github.com/lestcape/Gnome-Global-AppMenu) (currently conflicts with Pixel Saver) and [HUD](https://github.com/p-e-w/plotinus) (currently resolving non-root installation). Feel free to open any issues/pull requests if you have any ideas.
 
 #### Main menu:  
 <img src="http://i.imgur.com/i5fR098.png" width="600" align="middle">
