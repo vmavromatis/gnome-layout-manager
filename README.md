@@ -3,8 +3,7 @@
 
 # GNOME Layout Manager
 
-##### Update 6/5/2017: I'm trying to make Global menu and Pixel saver work together for the Unity layout. This is where I got so far (good fonts and padding but wrong order on text/icons). Any help/advice feel free to open an issue/pull request.
-![](http://i.imgur.com/exAXsQQ.png)
+##### Coming soon: [Global-Menu](https://github.com/lestcape/Gnome-Global-AppMenu) (currently conflicts with Pixel Saver) and [HUD](https://github.com/p-e-w/plotinus) (currently resolving non-root installation). Feel free to open any issues/pull requests if you have any ideas.
 
 #### Main menu:  
 <img src="http://i.imgur.com/i5fR098.png" width="600" align="middle">
