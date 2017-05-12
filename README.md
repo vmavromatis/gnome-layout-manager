@@ -1,5 +1,9 @@
 *Notice: This software is alpha and under development. Please use at your own risk.*
 
+# GNOME Layout Manager
+A bash script that batch installs and tweaks GNOME extensions as well as GTK/Shell themes. There are currently three options available: Unity, Windows and macOS.
+<img src="http://i.imgur.com/6Qgf2Cc.png" width="600" align="middle">
+
 #### Update:
 Added Global Menu for Unity Layout! A new [fork](https://github.com/bill-mavromatis/Gnome-Global-AppMenu) was made based on [lestcape's excellent extension](https://github.com/lestcape/Gnome-Global-AppMenu) where I added some tweaks to the css file to improve padding and fixed the conflict with Pixel Saver. To run it you need the unity gtk module:  
 <img src="https://cdn2.iconfinder.com/data/icons/metro-uinvert-dock/256/OS_Ubuntu.png" height="20" align="left">Ubuntu/Mint: ```sudo apt-get install unity-gtk2-module unity-gtk3-module```  
@@ -8,14 +12,10 @@ Added Global Menu for Unity Layout! A new [fork](https://github.com/bill-mavroma
 
 Coming soon: [HUD](https://github.com/p-e-w/plotinus) (currently [resolving](https://github.com/p-e-w/plotinus/issues/25) non-root installation). Feel free to open any issues/pull requests if you have any ideas.
 
-# GNOME Layout Manager
-A bash script that batch installs and tweaks GNOME extensions as well as GTK/Shell themes. There are currently three options available: Unity, Windows and macOS.
-<img src="http://i.imgur.com/6Qgf2Cc.png" width="600" align="middle">
-
 #### Required Packages:
 ```zenity wget curl unzip```  
 
-#### Instructions:
+#### Install Instructions:
 Download and run the script as user (no root required):
 ```
 wget https://raw.githubusercontent.com/bill-mavromatis/gnome-layout-manager/master/layoutmanager.sh
@@ -35,10 +35,7 @@ Backup: ```~/.config/gnome-layout-manager```
 Preview: 
 ![Unity](http://i.imgur.com/He66ZsK.png)
 
-| <img style="float: left;" src="http://i.imgur.com/He66ZsK.png" height="20" > | 
-
-
-Extensions:
+| <img style="float: left;" src="http://i.imgur.com/He66ZsK.png" height="200" > | Extensions: |
 - [Dash to dock](https://extensions.gnome.org/extension/307/dash-to-dock/)
 - [TopIcons Plus](https://extensions.gnome.org/extension/1031/topicons/)
 - [AppIndicator](https://extensions.gnome.org/extension/615/appindicator-support/)
@@ -51,7 +48,7 @@ Extensions:
 Theme:
 - [United (GTK+Shell+Wallpaper)](https://www.gnome-look.org/p/1174889) by [@godlyranchdressing](https://github.com/godlyranchdressing) Licence: GPLv2
 - [Humanity icon theme](https://launchpad.net/humanity) by Canonical, Licence: GPLv2
-|
+
 
 ## Windows
 
