@@ -35,7 +35,7 @@ Backup: ```~/.config/gnome-layout-manager```
 Preview: 
 ![Unity](http://i.imgur.com/He66ZsK.png)
 
-| <img style="float: left;" src="http://i.imgur.com/He66ZsK.png" height="200" > | Extensions: |
+Extensions:
 - [Dash to dock](https://extensions.gnome.org/extension/307/dash-to-dock/)
 - [TopIcons Plus](https://extensions.gnome.org/extension/1031/topicons/)
 - [AppIndicator](https://extensions.gnome.org/extension/615/appindicator-support/)
@@ -56,11 +56,11 @@ Preview:
 ![Windows](http://i.imgur.com/c4EY20U.png)
 
 Extensions:
-- Dash to panel
-- TopIcons Plus
-- AppIndicator
-- GnoMenu
-- User Themes
+- [Dash to panel](https://extensions.gnome.org/extension/1160/dash-to-panel/)
+- [TopIcons Plus](https://extensions.gnome.org/extension/1031/topicons/)
+- [AppIndicator](https://extensions.gnome.org/extension/615/appindicator-support/)
+- [GnoMenu](https://extensions.gnome.org/extension/608/gnomenu/)
+- [User Themes](https://extensions.gnome.org/extension/19/user-themes/)
 
 Theme:
 - [Windows-10](https://github.com/B00merang-Project/Windows-10) (GTK+Shell+Icons) by [@B00merang-Project](https://github.com/B00merang-Project), Licence: GPLv3
@@ -72,11 +72,11 @@ Preview:
 ![macOS](http://i.imgur.com/aYAfZxQ.png)
 
 Extensions:
-- Dash to dock
-- TopIcons Plus
-- AppIndicator
-- User Themes
-- Frippery Move Clock
+- [Dash to dock](https://extensions.gnome.org/extension/307/dash-to-dock/)
+- [TopIcons Plus](https://extensions.gnome.org/extension/1031/topicons/)
+- [AppIndicator](https://extensions.gnome.org/extension/615/appindicator-support/)
+- [User Themes](https://extensions.gnome.org/extension/19/user-themes/)
+- [Frippery Move Clock](https://extensions.gnome.org/extension/2/move-clock/)
 
 Theme:
 - [Gnome-OSX-II-NT](https://www.gnome-look.org/p/1171688/) (GTK) by [@PAULXFCE](https://www.gnome-look.org/member/455718/), Licence: [Creative Commons](https://creativecommons.org/licenses/by-sa/3.0/) 
@@ -86,20 +86,37 @@ Theme:
 
 ### FAQ: 
 
+#### -Is this script safe?
+The script is absolutely safe, you can look through all the code if you wish. It checks whether you have the correct files and if you don't it downloads files into /tmp directory and moves them into the appropriate install paths. Please make sure you run the script as user (no need for root).
+
 #### -My GNOME shell freezes when I run the script.
-In some occasions your GNOME session might seem to freeze while running the script, however the script is probably still running in the background (you can see the light of your Hard Drive of your computer flashing intensely). Please allow a full 1 minute for the script to complete. Once it completes the shell will appear to restart and you may close the terminal. Your programs will not be lost, but it'd be safe to save your work before running the script.
+In some occasions your GNOME session might seem to freeze while running the script, however the script is most likely still running in the background. Please allow 1 minute for the script to complete. Once it completes the shell will appear to restart and you may close the terminal. Your programs will not be lost, but it'd be safe to save your work before running the script.
+
+#### -I am encountering installation issues.
+In some cases you may consider to delete your installed themes/icons/extensions etc from the aforementioned install paths (check above). Specifically if you have previously installed Global Menu or Pixel Saver, please remove them so that the script reinstalls the correct versions.
 
 #### -I'm getting various errors on the console while running the script.
-This is normal, most of commands are verbose, and some errors occur because you may already have the extensions that the script is trying to download. Please ignore them and allow the script about 1 minute to complete. If the script is interrupted, you can re-run it. When done, close the console, and if you have any issues hit Alt+F2 and type "r" (this will restart X).
+~~This is normal, most of commands are verbose, and some errors occur because you may already have the extensions that the script is trying to download. Please ignore them and allow the script about 1 minute to complete. If the script is interrupted, you can re-run it. When done, close the console, and if you have any issues hit Alt+F2 and type "r" (this will restart X).~~ This issue should be fixed now.
 
 #### -Global menu when?
-I'm keeping a very close look at [this extension](https://github.com/lestcape/Gnome-Global-AppMenu) and will add it once it's stable enough.
+~~I'm keeping a very close look at [this extension](https://github.com/lestcape/Gnome-Global-AppMenu) and will add it once it's stable enough.~~ Global menu is now added! However it may still be buggy as it's still being developed. It does not work on all applications unfortunately as not all of them export their menu. It does not work with Nautilus (alternatives: Thunar/pcmanfm) and neither with Gedit (alternatives: mousepad/leafpad). Please make sure you have installed the unity gtk module and restarted your computer.
 
 #### -Any new layouts being added?
-If you have any ideas, feel free to open an issue or make a pull request.
+If you have any ideas, feel free to open an issue or make a pull request. I am also considering turning this into an extension.
 
-Licence: GPL 3.0
 
-Author: Bill Mavromatis
+### Donate: 
+
+If you enjoy this project, you can treat me a cup of coffee :)
+[![Paypal](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=bill%2emavromatis%40gmail%2ecom&lc=GB&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)If this project help you reduce time to develop, you can give me a cup of coffee :)
+
+
+### Licence: 
+
+GPL 3.0
+
+### Author: 
+
+Bill Mavromatis
 
 Credits: Original extension manager script by Nicolas Bernaerts http://bernaerts.dyndns.org/, United theme by @godlyranchdressing, other credits show on the layout descriptions.
