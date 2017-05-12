@@ -2,17 +2,17 @@
 
    #################################################################
    #                                                               #
-   #              GNOME Layout Manager              		   #
-   #                Copyright (C) 2017 Ian Brunelli                #
-   #       Licensed under the GNU General Public License 2.0       #
+   #                 GNOME Layout Manager              		   #
+   #           Copyright (C) 2017 Bill Mavromatis                  #
+   #       Licensed under the GNU General Public License 3.0       #
    #                                                               #
-   #  https://github.com/brunelli/gnome-shell-extension-installer  #
+   #  https://github.com/bill-mavromatis/gnome-layout-manager      #
    #                                                               #
    #################################################################
 
 
-# Check tools availability
-ZENITY = true
+# Check tools availability (zenity, wget, unzip)
+ZENITY=true
 command -v zenity >/dev/null 2>&1 || { ZENITY=false; }
 command -v unzip >/dev/null 2>&1 || {
     if [[ $ZENITY == true ]]; then
@@ -38,7 +38,7 @@ GNOME_SITE="https://extensions.gnome.org"
 # Get current GNOME version (major and minor only)
 GNOME_VERSION="$(DISPLAY=":0" gnome-shell --version | tr -cd "0-9." | cut -d'.' -f1,2)"
 
-# default installation path for default mode (user mode, no need of sudo)
+# Default installation path for default mode (user mode, no need of sudo)
 EXTENSION_PATH="$HOME/.local/share/gnome-shell/extensions"
 
 
@@ -52,8 +52,8 @@ declare -a EXT_MACOS=('dash-to-dock@micxgx.gmail.com' 'TopIcons@phocean.net' 'ap
 
 LAYOUT=""
 
-# If no arguments given and zenity installed
-if [[ ${#} -eq 0 && $ZENITY == true ]]; then
+# If no arguments given, show help
+if [[ ${#} -eq 0 && $ZENITY == false ]]; then
     echo "Downloads and installs GNOME extensions from Gnome Shell Extensions site https://extensions.gnome.org/"
     echo "Parameters are :"
     echo "  --save                  Save current settings (all gsettings in /org/gnome/) to ~/.config/gnome-layout-manager/"
@@ -64,7 +64,7 @@ if [[ ${#} -eq 0 && $ZENITY == true ]]; then
     echo "  --vanilla               GNOME Vanilla (Adwaita theme + disable all extensions)"
     exit 1
 else
-    if [[ $# -eq 0 ]]; then   #if no argument given, start zenity
+    if [[ $# -eq 0 ]]; then   #if no argument given and zenity installed, start zenity
 	    ANSWER=$(zenity --list --width=800 --height=400 --text "Please select the layout you want" --column "Option" --column "Details" \
 	    "Save" "Save current settings (all gsettings in /org/gnome/) to ~/.config/gnome-layout-manager/"\
 	    "Load" "Load settings (Please save your work as this may crash your gnome-shell)"\
@@ -85,7 +85,7 @@ else
     fi
 fi
 
-# iterate thru parameters
+# Read arguments (if any)
 while test ${#} -gt 0
 do
   case $1 in
@@ -99,13 +99,13 @@ do
   esac
 done
 
-#disable all current extensions
+#Disable all current extensions
 if [[ $LAYOUT == "windows" || $LAYOUT == "macos" || $LAYOUT == "unity" || $LAYOUT == "vanilla" ]]; then
 	echo "Layout selected: $LAYOUT"
 	echo "Disabling all current extensions"
 
 	gsettings set org.gnome.shell enabled-extensions []
-    	[[ -e ~/.local/share/themes ]] || mkdir -p ~/.local/share/themes  #create theme and icon directory
+    	[[ -e ~/.local/share/themes ]] || mkdir -p ~/.local/share/themes  #Create theme and icon directory
 	[[ -e ~/.local/share/icons ]] || mkdir -p ~/.local/share/icons 
 fi 
 
@@ -143,7 +143,7 @@ if [[ $LAYOUT == "windows" || $LAYOUT == "macos" || $LAYOUT == "unity" ]]; then
 				unzip -o "${TMP_ZIP}" -d /tmp/
 				cp -R "/tmp/pixel-saver-master/pixel-saver@deadalnix.me/" -d "${EXTENSION_PATH}"
 				chmod +r "${EXTENSION_PATH}"/"${EXT_UUID}"/*
-			else
+			else    #for everything else use GNOME site
 				wget --header='Accept-Encoding:none' -O "${TMP_ZIP}" "${EXTENSION_URL}"		
 				# unzip extension to installation folder
 				mkdir -p "${EXTENSION_PATH}"/"${EXT_UUID}"
@@ -152,7 +152,7 @@ if [[ $LAYOUT == "windows" || $LAYOUT == "macos" || $LAYOUT == "unity" ]]; then
 			fi
 
 		fi
-		rm -f "${TMP_ZIP}"
+		rm -f "${TMP_ZIP}" #remove temp files
 	done
 fi
 
