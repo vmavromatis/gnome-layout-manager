@@ -1,12 +1,8 @@
 ### Notice: This software is alpha and under development. Please use at your own risk.
 
+##### Coming soon: [Global-Menu](https://github.com/lestcape/Gnome-Global-AppMenu) (currently [conflicts](https://github.com/deadalnix/pixel-saver/issues/129) with Pixel Saver) and [HUD](https://github.com/p-e-w/plotinus) (currently [resolving](https://github.com/p-e-w/plotinus/issues/25) non-root installation). Feel free to open any issues/pull requests if you have any ideas.
 
 # GNOME Layout Manager
-
-##### Update 6/5/2017: I'm trying to make Global menu and Pixel saver work together for the Unity layout. This is where I got so far (good fonts and padding but wrong order on text/icons). Any help/advice feel free to open an issue/pull request.
-![](http://i.imgur.com/exAXsQQ.png)
-
-#### Main menu:  
 <img src="http://i.imgur.com/i5fR098.png" width="600" align="middle">
 
 A bash script that batch installs and tweaks GNOME extensions as well as GTK/Shell themes. There are currently three options available: Unity, Windows and macOS.
@@ -19,13 +15,11 @@ chmod +x layoutmanager.sh
 ```
 #### Install folders:
 Extensions: ```~/.local/share/gnome-shell/extensions```   
-Themes: ```~/.themes```  
+Themes: ```~/.local/share/themes```  
 Icons: ```~/.local/share/icons```  
 Schemas: ```~/.local/share/glib-2.0/schemas```  
 Wallpaper: ```~/Pictures``` (or as set by xdg-user-dir)  
 Backup: ```~/.config/gnome-layout-manager```  
-
-
 
 ## Unity
 
@@ -81,7 +75,7 @@ Theme:
 ### FAQ: 
 
 #### -My GNOME shell freezes when I run the script.
-In some rare occasions your GNOME session might seem to freeze while running the script, however the script is probably still running in the background (you can see the light of your Hard Drive of your computer flashing intensely). Please allow a full 1 minute for the script to complete. Once it completes the shell will appear to restart and you may close the terminal. Your programs will not be lost, but it'd be safe to save your work before running the script.
+In some occasions your GNOME session might seem to freeze while running the script, however the script is probably still running in the background (you can see the light of your Hard Drive of your computer flashing intensely). Please allow a full 1 minute for the script to complete. Once it completes the shell will appear to restart and you may close the terminal. Your programs will not be lost, but it'd be safe to save your work before running the script.
 
 #### -I'm getting various errors on the console while running the script.
 This is normal, most of commands are verbose, and some errors occur because you may already have the extensions that the script is trying to download. Please ignore them and allow the script about 1 minute to complete. If the script is interrupted, you can re-run it. When done, close the console, and if you have any issues hit Alt+F2 and type "r" (this will restart X).
@@ -97,3 +91,96 @@ Licence: GPL 3.0
 Author: Bill Mavromatis
 
 Credits: Original extension manager script by Nicolas Bernaerts http://bernaerts.dyndns.org/, United theme by @godlyranchdressing, other credits show on the layout descriptions.
+### Notice: This software is alpha and under development. Please use at your own risk.
+2
+​
+3
+​
+4
+# GNOME Layout Manager
+5
+​
+6
+##### Update 6/5/2017: I'm trying to make Global menu and Pixel saver work together for the Unity layout. This is where I got so far (good fonts and padding but wrong order on text/icons). Any help/advice feel free to open an issue/pull request.
+7
+![](http://i.imgur.com/exAXsQQ.png)
+8
+​
+9
+#### Main menu:  
+10
+<img src="http://i.imgur.com/i5fR098.png" width="600" align="middle">
+11
+​
+12
+A bash script that batch installs and tweaks GNOME extensions as well as GTK/Shell themes. There are currently three options available: Unity, Windows and macOS.
+13
+​
+14
+To get and run the script:
+15
+```
+16
+wget https://raw.githubusercontent.com/bill-mavromatis/gnome-layout-manager/master/layoutmanager.sh
+17
+chmod +x layoutmanager.sh
+18
+./layoutmanager.sh
+19
+```
+20
+#### Install folders:
+21
+Extensions: ```~/.local/share/gnome-shell/extensions```   
+22
+Themes: ```~/.themes```  
+23
+Icons: ```~/.local/share/icons```  
+24
+Schemas: ```~/.local/share/glib-2.0/schemas```  
+25
+Wallpaper: ```~/Pictures``` (or as set by xdg-user-dir)  
+26
+Backup: ```~/.config/gnome-layout-manager```  
+27
+​
+28
+​
+29
+​
+30
+## Unity
+31
+​
+32
+Preview: 
+33
+![Unity](http://i.imgur.com/He66ZsK.png)
+34
+Extensions:
+35
+- Dash to dock
+36
+- TopIcons Plus
+37
+- AppIndicator
+38
+- User Themes
+39
+- Hide Activities
+40
+- Frippery Move Clock
+41
+- Pixel Saver
+42
+​
+43
+Theme:
+44
+- [United (GTK+Shell+Wallpaper)](https://www.gnome-look.org/p/1174889) by [@godlyranchdressing](https://github.com/godlyranchdressing) Licence: GPLv2
+45
+- [Humanity icon theme](https://launchpad.net/humanity) by Canonical, Licence: GPLv2
+46
+​
+47
+## Windows
