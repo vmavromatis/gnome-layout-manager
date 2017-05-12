@@ -263,8 +263,8 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	wget https://launchpad.net/ubuntu/+archive/primary/+files/humanity-icon-theme_0.6.13.tar.xz && tar --xz -xvf humanity-icon-theme_0.6.13.tar.xz -C /tmp/ && mv /tmp/humanity-icon-theme-0.6.13/* ~/.local/share/icons
 	fi
 	gsettings set org.gnome.desktop.interface icon-theme "Humanity"
-	gsettings set org.gnome.desktop.interface gtk-theme "United"
-	gsettings set org.gnome.shell.extensions.user-theme name "United"
+	gsettings set org.gnome.desktop.interface gtk-theme "United-Ubuntu"
+	gsettings set org.gnome.shell.extensions.user-theme name "United-Ubuntu"
 	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
 	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"	
         gnome-shell --replace &>/dev/null & disown
