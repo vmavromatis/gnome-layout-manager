@@ -42,8 +42,8 @@ Extensions:
 - [User Themes](https://extensions.gnome.org/extension/19/user-themes/)
 - [Hide Activities](https://extensions.gnome.org/extension/744/hide-activities-button/)
 - [Frippery Move Clock](https://extensions.gnome.org/extension/2/move-clock/)
-- [Pixel Saver (fork - added United theme)](https://github.com/bill-mavromatis/pixel-saver)
-- [Global Menu (fork - fixed padding and conflict with Pixel Siaver)](https://github.com/bill-mavromatis/Gnome-Global-AppMenu)
+- [Pixel Saver fork (added United theme)](https://github.com/bill-mavromatis/pixel-saver)
+- [Global Menu fork (fixed padding and conflict with Pixel Saver)](https://github.com/bill-mavromatis/Gnome-Global-AppMenu)
 
 Theme:
 - [United (GTK+Shell+Wallpaper)](https://www.gnome-look.org/p/1174889) by [@godlyranchdressing](https://github.com/godlyranchdressing) Licence: GPLv2
@@ -107,8 +107,8 @@ If you have any ideas, feel free to open an issue or make a pull request. I am a
 
 ### Donate: 
 
-If you enjoy this project, you can treat me a cup of coffee :)
-[![Paypal](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=bill%2emavromatis%40gmail%2ecom&lc=GB&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)If this project help you reduce time to develop, you can give me a cup of coffee :)
+If you enjoy this project, you can consider buying me a cup of coffee :)  
+[![Paypal](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=bill%2emavromatis%40gmail%2ecom&lc=GB&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted)
 
 
 ### Licence: 
@@ -119,4 +119,5 @@ GPL 3.0
 
 Bill Mavromatis
 
-Credits: Original extension manager script by Nicolas Bernaerts http://bernaerts.dyndns.org/, United theme by @godlyranchdressing, other credits show on the layout descriptions.
+### Credits:
+Original extension manager script by Nicolas Bernaerts http://bernaerts.dyndns.org/, United theme by @godlyranchdressing, other credits show on the layout descriptions.
