@@ -1,29 +1,18 @@
 #!/bin/bash
-# --------------------------------------------
-# Downloads and installs GNOME extensions to match layout https://github.com/bill-mavromatis/gnome-layout-manager
-# Licence: GPL 3.0
-# Author: Bill Mavromatis
-# Credits: Original extension manager script by Nicolas Bernaerts http://bernaerts.dyndns.org/, United theme by globalmenuwhen from gnome-look.org
-#
-# Revision history :
-#   14/04/2017 - V1.0 : ALPHA release(use on a VM or liveUSB not on your main system, it may affect your extensions)
-#   16/04/2017 - V1.1 : Tweaked gsettings, bugfixes
-#   16/04/2017 - V1.2 : Added more extensions and themes for Unity
-#   17/04/2017 - V1.3 : Fixed invalid URL for United, changed to United Light theme, more bugfixes
-#   17/04/2017 - V1.4 : More bugfixing
-#   19/04/2017 - V1.5 : Fixed broken URL, changed download directory to /tmp, bugfixes
-#   20/04/2017 - V1.6 : Changed United to 1.74, in process of testing out dynamic panel transpareny and global menus
-#   21/04/2017 - V1.7 : Placed title bar icons for macosx to the left, some minor bugfixing, United URL now on github
-#   27/04/2017 - V1.8 : Added zenity dialogs (thanks to @JackHack96), added AppIndicator to go with TopIcons according to issue#2, made wgets verbose
-#   27/04/2017 - V1.9 : Renamed MacOSX to macOS, removed dropdown arrows from windows layout
-#   2/5/2017   - V2.0 : Added themes for Windows/macOS, added vanilla layout, save/load function
-#   4/5/2017   - V2.1 : Fixed save/load function, added wallpapers, reverted commit (changed dconf back to gsettings loop)
-#   7/5/2017   - V2.2 : Housekeeping, check if extensions/themes are installed, changed theme dir to the official one, removed local schemadirs, arguments work again, temp hack for ext800
-# -------------------------------------------
 
-ZENITY=true
+   #################################################################
+   #                                                               #
+   #              GNOME Layout Manager              		   #
+   #                Copyright (C) 2017 Ian Brunelli                #
+   #       Licensed under the GNU General Public License 2.0       #
+   #                                                               #
+   #  https://github.com/brunelli/gnome-shell-extension-installer  #
+   #                                                               #
+   #################################################################
 
-# check tools availability
+
+# Check tools availability
+ZENITY = true
 command -v zenity >/dev/null 2>&1 || { ZENITY=false; }
 command -v unzip >/dev/null 2>&1 || {
     if [[ $ZENITY == true ]]; then
@@ -42,33 +31,35 @@ command -v wget >/dev/null 2>&1 || {
     exit 1;
 }
 
-# install path (user and system mode)
-USER_PATH="$HOME/.local/share/gnome-shell/extensions"
-[ -f /etc/debian_version ] && SYSTEM_PATH="/usr/local/share/gnome-shell/extensions" || SYSTEM_PATH="/usr/share/gnome-shell/extensions"
 
-# set gnome shell extension site URL
+# Set gnome shell extension site URL
 GNOME_SITE="https://extensions.gnome.org"
 
-# get current gnome version (major and minor only)
+# Get current GNOME version (major and minor only)
 GNOME_VERSION="$(DISPLAY=":0" gnome-shell --version | tr -cd "0-9." | cut -d'.' -f1,2)"
 
 # default installation path for default mode (user mode, no need of sudo)
-INSTALL_MODE="user"
-EXTENSION_PATH="${USER_PATH}"
-INSTALL_SUDO=""
+EXTENSION_PATH="$HOME/.local/share/gnome-shell/extensions"
+
 
 PICTURES_FOLDER=$(xdg-user-dir PICTURES)
+dirs=( $(find /usr/share/gnome-shell/extensions $HOME/.local/share/gnome-shell/extensions -maxdepth 1 -type d -printf '%P\n') )
+
+
+declare -a EXT_UNITY=('dash-to-dock@micxgx.gmail.com' 'TopIcons@phocean.net' 'user-theme@gnome-shell-extensions.gcampax.github.com' 'Move_Clock@rmy.pobox.com' 'appindicatorsupport@rgcjonas.gmail.com' 'gnomeGlobalAppMenu@lestcape' 'Hide_Activities@shay.shayel.org' 'RemoveAppMenu@rastersoft.com' 'pixel-saver@deadalnix.me')
+declare -a EXT_WINDOWS=('TopIcons@phocean.net' 'appindicatorsupport@rgcjonas.gmail.com' 'user-theme@gnome-shell-extensions.gcampax.github.com' 'dash-to-panel@jderose9.github.com' 'gnomenu@panacier.gmail.com' 'remove-dropdown-arrows@mpdeimos.com')
+declare -a EXT_MACOS=('dash-to-dock@micxgx.gmail.com' 'TopIcons@phocean.net' 'appindicatorsupport@rgcjonas.gmail.com' 'Move_Clock@rmy.pobox.com' 'user-theme@gnome-shell-extensions.gcampax.github.com')
 
 LAYOUT=""
 
-# help message if no parameter
-if [[ ${#} -eq 0 && $ZENITY == false ]]; then
+# If no arguments given and zenity installed
+if [[ ${#} -eq 0 && $ZENITY == true ]]; then
     echo "Downloads and installs GNOME extensions from Gnome Shell Extensions site https://extensions.gnome.org/"
     echo "Parameters are :"
     echo "  --save                  Save current settings (all gsettings in /org/gnome/) to ~/.config/gnome-layout-manager/"
     echo "  --load                  Load settings (Please save your work as this may crash your gnome-shell)"
     echo "  --windows               Windows 10 layout (panel and no topbar)"
-    echo "  --macosx                macOS layout (bottom dock /w autohide + topbar)"
+    echo "  --macos                 macOS layout (bottom dock /w autohide + topbar)"
     echo "  --unity                 Unity layout (left dock + topbar)"
     echo "  --vanilla               GNOME Vanilla (Adwaita theme + disable all extensions)"
     exit 1
@@ -85,10 +76,10 @@ else
 	    case $ANSWER in
 		"Save") declare -a arr=(); shift; LAYOUT="save"; shift; ;;
 		"Load") declare -a arr=(); shift; LAYOUT="load"; shift; ;;
-		"Unity layout") declare -a arr=("307" "1031" "19" "744" "2" "615" "723"); shift; LAYOUT="unity"; shift; ;;
+		"Unity layout") declare -a arr=( "${EXT_UNITY[@]}" ); shift; LAYOUT="unity"; shift; ;;
 		"GNOME Vanilla") declare -a arr=(); LAYOUT="vanilla"; shift; ;;
-		"macOS layout") declare -a arr=("307" "1031" "615" "19" "2"); LAYOUT="macosx"; shift; ;;
-		"Windows 10 layout") declare -a arr=("1160" "608" "1031" "615" "800" "19"); LAYOUT="windows"; shift; ;;
+		"macOS layout") declare -a arr=( "${EXT_MACOS[@]}" ); LAYOUT="macos"; shift; ;;
+		"Windows 10 layout") declare -a arr=( "${EXT_WINDOWS[@]}" ); LAYOUT="windows"; shift; ;;
 		*) exit 1
 	    esac
     fi
@@ -100,16 +91,16 @@ do
   case $1 in
     --save) declare -a arr=(); LAYOUT="save"; shift; ;;
     --load) declare -a arr=(); LAYOUT="load"; shift; ;;
-    --windows) declare -a arr=("1160" "608" "1031" "615" "800" "19"); LAYOUT="windows"; shift; ;;
-    --macosx) declare -a arr=("307" "1031" "615" "19" "2"); LAYOUT="macosx"; shift; ;;
-    --unity) declare -a arr=("307" "1031" "19" "744" "2" "615" "723"); shift; LAYOUT="unity"; shift; ;;
+    --windows) declare -a arr=( "${EXT_WINDOWS[@]}" ); LAYOUT="windows"; shift; ;;
+    --macos) declare -a arr=( "${EXT_MACOS[@]}" ); LAYOUT="macos"; shift; ;;
+    --unity) declare -a arr=( "${EXT_UNITY[@]}" ); shift; LAYOUT="unity"; shift; ;;
     --vanilla) declare -a arr=(); shift; LAYOUT="vanilla"; shift; ;;
     *) echo "Unknown parameter $1"; shift; ;;
   esac
 done
 
 #disable all current extensions
-if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" || $LAYOUT == "vanilla" ]]; then
+if [[ $LAYOUT == "windows" || $LAYOUT == "macos" || $LAYOUT == "unity" || $LAYOUT == "vanilla" ]]; then
 	echo "Layout selected: $LAYOUT"
 	echo "Disabling all current extensions"
 
@@ -119,117 +110,49 @@ if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" || $LAYO
 fi 
 
 #install all extensions from array
-if [[ $LAYOUT == "windows" || $LAYOUT == "macosx" || $LAYOUT == "unity" ]]; then
-	for EXTENSION_ID in "${arr[@]}"
+if [[ $LAYOUT == "windows" || $LAYOUT == "macos" || $LAYOUT == "unity" ]]; then
+	for EXT_UUID in "${arr[@]}"
 	do
-		# if no extension id, exit
-		#[ "${EXTENSION_ID}" = "" ] && { echo "You must specify an extension ID"; exit; }
-
-		# if no action, exit
-		#[ "${ACTION}" = "" ] && { echo "You must specify a layout"; exit; }
-
-		# if system mode, set system installation path and sudo mode
-		#[ "${INSTALL_MODE}" = "system" ] && { EXTENSION_PATH="${SYSTEM_PATH}"; INSTALL_SUDO="sudo"; }
-
-		# create temporary files
-		TMP_DESC=$(mktemp -t ext-XXXXXXXX.txt)
-		TMP_ZIP=$(mktemp -t ext-XXXXXXXX.zip)
-		TMP_VERSION=$(mktemp -t ext-XXXXXXXX.ver)
-		rm "${TMP_DESC}" "${TMP_ZIP}"
-
-		# get extension description
-		wget --header='Accept-Encoding:none' -O "${TMP_DESC}" "${GNOME_SITE}/extension-info/?pk=${EXTENSION_ID}"
-
-		# get extension name
-		EXTENSION_NAME=$(sed 's/^.*name[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
-
-		# get extension description
-		EXTENSION_DESCR=$(sed 's/^.*description[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
-
-		# get extension UUID
-		EXTENSION_UUID=$(sed 's/^.*uuid[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
-
-		# if ID not known
-		if [ ! -s "${TMP_DESC}" ];
-		then
-		  echo "Extension with ID ${EXTENSION_ID} is not available from Gnome Shell Extension site."
-		elif [[ -d ~/.local/share/gnome-shell/extensions/${EXTENSION_UUID} ]]; then
-		  echo "Extension already installed."
+		# if installed, skip
+		if [[ " ${dirs[*]} " == *" $EXT_UUID "* ]]; then
+			echo "Extension ${EXT_UUID} is already installed. Skipping."
 		else
-		# else, if installation mode
-		#elif [ "${ACTION}" = "install" ];
-		#then
+			if [[ ${EXT_UUID} == "remove-dropdown-arrows" ]]; then #For Dropdown Arrows fake 3.22
+				GNOME_VERSION="3.22"
+			fi
 
-		  # extract all available versions
-		  sed "s/\([0-9]*\.[0-9]*[0-9\.]*\)/\n\1/g" "${TMP_DESC}" | grep "pk" | grep "version" | sed "s/^\([0-9\.]*\).*$/\1/" > "${TMP_VERSION}"
+			TMP_ZIP=$(mktemp -t ext-XXXXXXXX.zip)
 
-		  # check if current version is available
-		  VERSION_AVAILABLE=$(grep "^${GNOME_VERSION}$" "${TMP_VERSION}")
+			JSON="${GNOME_SITE}/extension-info/?uuid=${EXT_UUID}&shell_version=${GNOME_VERSION}"
+			EXTENSION_URL=${GNOME_SITE}$(curl -s "${JSON}" | sed -e 's/^.*download_url[\": ]*\([^\"]*\).*$/\1/') 
 
-		  # if version is not available, get the next one available
-		  if [ "${VERSION_AVAILABLE}" = "" ]
-		  then
-		    echo "${GNOME_VERSION}" >> "${TMP_VERSION}"
-		    VERSION_AVAILABLE=$(cat "${TMP_VERSION}" | sort -V | sed "1,/${GNOME_VERSION}/d" | head -n 1)
-		  fi
-		  
-		  
-		  if [[ ${EXTENSION_ID} -eq "800" ]]; then #Dirty hack for ext800 (temp)
-		  	VERSION_AVAILABLE="3.22"
-		  fi
-
-		  # if still no version is available, error message
-		  if [ "${VERSION_AVAILABLE}" = "" ]  
-		  then
-		    echo "Gnome Shell version is ${GNOME_VERSION}."
-		    echo "Extension ${EXTENSION_NAME} is not available for this version."
-		    echo "Available versions are :"
-		    sed "s/\([0-9]*\.[0-9]*[0-9\.]*\)/\n\1/g" "${TMP_DESC}" | grep "pk" | grep "version" | sed "s/^\([0-9\.]*\).*$/\1/" | sort -V | xargs
-
-		  # else, install extension
-		  else
-		    # get extension description
-		    wget --header='Accept-Encoding:none' -O "${TMP_DESC}" "${GNOME_SITE}/extension-info/?pk=${EXTENSION_ID}&shell_version=${VERSION_AVAILABLE}"
-
-		    # get extension download URL
-		    EXTENSION_URL=$(sed 's/^.*download_url[\": ]*\([^\"]*\).*$/\1/' "${TMP_DESC}")
-
-		    # download extension archive
-		    wget --header='Accept-Encoding:none' -O "${TMP_ZIP}" "${GNOME_SITE}${EXTENSION_URL}"
-
-		    # unzip extension to installation folder
-		    ${INSTALL_SUDO} mkdir -p "${EXTENSION_PATH}"/"${EXTENSION_UUID}"
-		    ${INSTALL_SUDO} unzip -oq "${TMP_ZIP}" -d "${EXTENSION_PATH}"/"${EXTENSION_UUID}"
-		    ${INSTALL_SUDO} chmod +r "${EXTENSION_PATH}"/"${EXTENSION_UUID}"/*
-
-		    # list enabled extensions
-		    EXTENSION_LIST=$(gsettings get org.gnome.shell enabled-extensions | sed 's/^.\(.*\).$/\1/')
-
-		    # if extension not already enabled, declare it
-		    EXTENSION_ENABLED=$(echo "${EXTENSION_LIST}" | grep "${EXTENSION_UUID}")
-		    [ "$EXTENSION_ENABLED" = "" ] && gsettings set org.gnome.shell enabled-extensions "[${EXTENSION_LIST},'${EXTENSION_UUID}']"
-
-		    # success message
-		    echo "Gnome Shell version is ${GNOME_VERSION}."
-		    echo "Extension ${EXTENSION_NAME} version ${VERSION_AVAILABLE} has been installed in ${INSTALL_MODE} mode (Id ${EXTENSION_ID}, Uuid ${EXTENSION_UUID})"
-		    #echo "Restart Gnome Shell to take effect."
-
-		  fi
-
-		# else, it is remove mode
-		#else
-
-		    # remove extension folder
-		    #${INSTALL_SUDO} rm -f -r "${EXTENSION_PATH}/${EXTENSION_UUID}"
-
-		    # success message
-		    #echo "Extension ${EXTENSION_NAME} has been removed in ${INSTALL_MODE} mode (Id ${EXTENSION_ID}, Uuid ${EXTENSION_UUID})"
-		    #echo "Restart Gnome Shell to take effect."
+			# download extension archive
+			if [[ ${EXT_UUID} == "gnomeGlobalAppMenu@lestcape" ]]; then #For Global Menu use GitHub instead
+				EXTENSION_URL="https://github.com/bill-mavromatis/Gnome-Global-AppMenu/archive/master.zip"	
+				wget --header='Accept-Encoding:none' -O "${TMP_ZIP}" "${EXTENSION_URL}"		
+				# unzip extension to installation folder
+				mkdir -p "${EXTENSION_PATH}"/"${EXT_UUID}"
+				unzip -o "${TMP_ZIP}" -d /tmp/
+				cp -R "/tmp/Gnome-Global-AppMenu-master/gnomeGlobalAppMenu@lestcape/" -d "${EXTENSION_PATH}"
+				chmod +r "${EXTENSION_PATH}"/"${EXT_UUID}"/*
+			elif [[ ${EXT_UUID} == "pixel-saver@deadalnix.me" ]]; then #For Pixel Saver use GitHub instead
+				EXTENSION_URL="https://github.com/bill-mavromatis/pixel-saver/archive/master.zip"	
+				wget --header='Accept-Encoding:none' -O "${TMP_ZIP}" "${EXTENSION_URL}"		
+				# unzip extension to installation folder
+				mkdir -p "${EXTENSION_PATH}"/"${EXT_UUID}"
+				unzip -o "${TMP_ZIP}" -d /tmp/
+				cp -R "/tmp/pixel-saver-master/pixel-saver@deadalnix.me/" -d "${EXTENSION_PATH}"
+				chmod +r "${EXTENSION_PATH}"/"${EXT_UUID}"/*
+			else
+				wget --header='Accept-Encoding:none' -O "${TMP_ZIP}" "${EXTENSION_URL}"		
+				# unzip extension to installation folder
+				mkdir -p "${EXTENSION_PATH}"/"${EXT_UUID}"
+				unzip -oq "${TMP_ZIP}" -d "${EXTENSION_PATH}"/"${EXT_UUID}"
+				chmod +r "${EXTENSION_PATH}"/"${EXT_UUID}"/*
+			fi
 
 		fi
-
-		# remove temporary files
-		rm -f "${TMP_DESC}" "${TMP_ZIP}" "${TMP_VERSION}"
+		rm -f "${TMP_ZIP}"
 	done
 fi
 
@@ -270,9 +193,10 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	gsettings set org.gnome.desktop.interface icon-theme "Windows-10-Icons-master"
 	gsettings set org.gnome.desktop.interface gtk-theme "Windows-10-master"
 	gsettings set org.gnome.shell.extensions.user-theme name "Windows-10-master"
+        gnome-shell --replace &>/dev/null & disown
 	zenity --info --width=500 --height=200 --text "Layout applied successfully.\nIf you are experiencing any issues, please restart gnome-shell."
 	;;
-    macosx) 
+    macos) 
    	gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'appindicatorsupport@rgcjonas.gmail.com', 'Move_Clock@rmy.pobox.com', 'user-theme@gnome-shell-extensions.gcampax.github.com']"
 	if [[ -e ~/.themes/Gnome-OSX-II-NT-2-5-1 ]]; then 
 		mv -v ~/.themes/Gnome-OSX-II-NT-2-5-1/ ~/.local/share/themes/Gnome-OSX-II-NT-2-5-1/    #move old files
@@ -306,10 +230,11 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	gsettings set org.gnome.desktop.interface gtk-theme "Gnome-OSX-II-NT-2-5-1"
 	gsettings set org.gnome.shell.extensions.user-theme name "Human"
 	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"
+        gnome-shell --replace &>/dev/null & disown
 	zenity --info --width=500 --height=200 --text "Layout applied successfully.\nIf you are experiencing any issues, please restart gnome-shell."
 	;;
     unity) 
-    gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'Hide_Activities@shay.shayel.org', 'Move_Clock@rmy.pobox.com', 'appindicatorsupport@rgcjonas.gmail.com', 'pixel-saver@deadalnix.me']"
+    gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'Hide_Activities@shay.shayel.org', 'Move_Clock@rmy.pobox.com', 'appindicatorsupport@rgcjonas.gmail.com', 'pixel-saver@deadalnix.me', 'RemoveAppMenu@rastersoft.com', 'gnomeGlobalAppMenu@lestcape']"
 	gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'
 	gsettings set org.gnome.shell.extensions.dash-to-dock intellihide 'false'
 	gsettings set org.gnome.shell.extensions.dash-to-dock background-opacity '0.7'
@@ -335,6 +260,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	gsettings set org.gnome.shell.extensions.user-theme name "United"
 	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
 	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"	
+        gnome-shell --replace &>/dev/null & disown
 	zenity --info --width=500 --height=200 --text "Layout applied successfully.\nIf you are experiencing any issues, please restart gnome-shell."
 	;;
     vanilla) 
@@ -343,6 +269,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	gsettings set org.gnome.desktop.interface cursor-theme "Adwaita"
 	gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 	gsettings set org.gnome.desktop.background picture-uri file:///usr/share/backgrounds/gnome/adwaita-morning.jpg
+	gnome-shell --replace &>/dev/null & disown
 	zenity --info --width=500 --height=200 --text "Layout applied successfully.\nIf you are experiencing any issues, please restart gnome-shell."
 	;;
     save) 
@@ -372,7 +299,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	#gsettings set org.gnome.shell enabled-extensions "$(cat ~/.config/gnome-layout-manager/extensions.txt)"	
 
 	bash -x ~/.config/gnome-layout-manager/backup.txt	
-
+	gnome-shell --replace &>/dev/null & disown
 	if [[ $ZENITY == true && ${#} -ne 0 ]]; then
 		zenity --info --text "Layout loaded from ~/.config/gnome-layout-manager/"
 		else
