@@ -253,7 +253,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	if [[ -e ~/.themes/United ]]; then 
 		mv -v ~/.themes/United* ~/.local/share/themes/    #move old files
 	elif [[ ! -d ~/.local/share/themes/United ]]; then 
-	cd /tmp && wget https://github.com/godlyranchdressing/United-GNOME/raw/master/United-Latest.tar.xz && tar -xf United-Latest.tar.xz -C /tmp/ && mv /tmp/United-Latest-Ubuntu/* ~/.local/share/themes/
+	cd /tmp && wget https://github.com/godlyranchdressing/United-GNOME/raw/master/United-Latest.tar.xz && tar -xf United-Latest.tar.xz -C /tmp/ && mv /tmp/United-Ubuntu/* ~/.local/share/themes/
 	fi
 	if [[ ! -f "$PICTURES_FOLDER"/wallpaper-united.png ]]; then 
 	cd /tmp && wget https://raw.githubusercontent.com/godlyranchdressing/United-GNOME/master/Wallpaper.png && mv Wallpaper.png "$PICTURES_FOLDER"/wallpaper-united.png
