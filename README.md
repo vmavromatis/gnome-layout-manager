@@ -1,6 +1,8 @@
 ### Notice: This software is alpha and under development. Please use at your own risk.
 
-##### Added Global Menu for Unity Layout! Coming soon: [HUD](https://github.com/p-e-w/plotinus) (currently [resolving](https://github.com/p-e-w/plotinus/issues/25) non-root installation). Feel free to open any issues/pull requests if you have any ideas.
+#### Added Global Menu for Unity Layout! 
+
+Coming soon: [HUD](https://github.com/p-e-w/plotinus) (currently [resolving](https://github.com/p-e-w/plotinus/issues/25) non-root installation). Feel free to open any issues/pull requests if you have any ideas.
 
 # GNOME Layout Manager
 <img src="http://i.imgur.com/i5fR098.png" width="600" align="middle">
