@@ -5,6 +5,7 @@ A bash script that batch installs and tweaks GNOME extensions as well as GTK/She
 <img src="http://i.imgur.com/6Qgf2Cc.png" width="600" align="middle">
 
 #### Update:
+![Global Menu](https://giant.gfycat.com/InsistentTheseEyas.gif)
 Added Global Menu for Unity Layout! A new [fork](https://github.com/bill-mavromatis/Gnome-Global-AppMenu) was made based on [lestcape's excellent extension](https://github.com/lestcape/Gnome-Global-AppMenu) where I added some tweaks to the css file to improve padding and fixed the conflict with Pixel Saver. To run it you need the unity gtk module:  
 <img src="https://cdn2.iconfinder.com/data/icons/metro-uinvert-dock/256/OS_Ubuntu.png" height="20" align="left">Ubuntu/Mint: ```sudo apt-get install unity-gtk2-module unity-gtk3-module```  
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Archlinux-icon-crystal-64.svg/2000px-Archlinux-icon-crystal-64.svg.png" height="20" align="left"> Arch/Antergos/Manjaro: ```yaourt -S unity-gtk-module-standalone-bzr```  
