@@ -32,7 +32,7 @@ Wallpaper: ```~/Pictures``` (or as set by xdg-user-dir)
 Backup: ```~/.config/gnome-layout-manager```  
 
 ## Unity
-![Unity](http://i.imgur.com/He66ZsK.png)
+![Unity](http://i.imgur.com/vzjZeE4.png)
 
 Extensions:
 - [Dash to dock](https://extensions.gnome.org/extension/307/dash-to-dock/)
