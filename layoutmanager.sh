@@ -205,10 +205,10 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	;;
     macos) 
    	gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'appindicatorsupport@rgcjonas.gmail.com', 'Move_Clock@rmy.pobox.com', 'user-theme@gnome-shell-extensions.gcampax.github.com']"
-	if [[ -e ~/.themes/Gnome-OSX-II-NT-2-5-1 ]]; then 
-		mv -v ~/.themes/Gnome-OSX-II-NT-2-5-1/ ~/.local/share/themes/Gnome-OSX-II-NT-2-5-1/    #move old files
-	elif [[ ! -d ~/.local/share/themes/Gnome-OSX-II-NT-2-5-1 ]]; then 
-		cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1489658553/Gnome-OSX-II-NT-2-5-1.tar.xz && tar -xvf Gnome-OSX-II-NT-2-5-1.tar.xz -C ~/.local/share/themes/
+	if [[ -e ~/.themes/Gnome-OSX-II-2-6-NT ]]; then 
+		mv -v ~/.themes/Gnome-OSX-II-NT-2-6/ ~/.local/share/themes/Gnome-OSX-II-2-6-NT/    #move old files
+	elif [[ ! -d ~/.local/share/themes/nome-OSX-II-2-6-NT ]]; then 
+		cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1494791955/Gnome-OSX-II-2-6-NT.tar.gz && tar -xvzf Gnome-OSX-II-2-6-NT.tar.gz -C ~/.local/share/themes/
 	fi
 	if [[ ! -f "$PICTURES_FOLDER"/wallpaper-macos.jpg ]]; then 
 		cd /tmp && wget https://upload.wikimedia.org/wikipedia/commons/9/9b/Aurora_-_panoramio.jpg && mv Aurora_-_panoramio.jpg "$PICTURES_FOLDER"/wallpaper-macos.jpg
@@ -234,7 +234,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	gsettings set org.gnome.shell.extensions.dash-to-dock apply-custom-theme 'false'
 	gsettings set org.gnome.desktop.wm.preferences button-layout 'close,minimize,maximize:'
 	gsettings set org.gnome.desktop.interface icon-theme "La-Capitaine"
-	gsettings set org.gnome.desktop.interface gtk-theme "Gnome-OSX-II-NT-2-5-1"
+	gsettings set org.gnome.desktop.interface gtk-theme "Gnome-OSX-II-2-6-NT"
 	gsettings set org.gnome.shell.extensions.user-theme name "Human"
 	gsettings set org.gnome.settings-daemon.plugins.xsettings overrides "{'Gtk/ShellShowsAppMenu': <1>}"
         gnome-shell --replace &>/dev/null & disown
