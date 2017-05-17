@@ -9,7 +9,7 @@ A bash script that batch installs and tweaks GNOME extensions as well as GTK/She
 Added Global Menu for Unity Layout! A new [fork](https://github.com/bill-mavromatis/Gnome-Global-AppMenu) was made based on [lestcape's excellent extension](https://github.com/lestcape/Gnome-Global-AppMenu) where I added some tweaks to the css file to improve padding and fixed the conflict with Pixel Saver. To run it you need the unity gtk module:  
 <img src="https://cdn2.iconfinder.com/data/icons/metro-uinvert-dock/256/OS_Ubuntu.png" height="20" align="left">Ubuntu/Mint: ```sudo apt-get install unity-gtk2-module unity-gtk3-module```  
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Archlinux-icon-crystal-64.svg/2000px-Archlinux-icon-crystal-64.svg.png" height="20" align="left"> Arch/Antergos/Manjaro: ```yaourt -S unity-gtk-module-standalone-bzr```  
-<img src="https://cdn1.iconfinder.com/data/icons/system-shade-circles/512/fedora-512.png" height="20" align="left">Fedora: ```sudo dnf install unity-gtk-module```  
+<img src="https://cdn1.iconfinder.com/data/icons/system-shade-circles/512/fedora-512.png" height="20" align="left">Fedora: ```sudo dnf install unity-gtk-module-common```  
 <img src="http://www.unixstickers.com/image/data/stickers/opensuse/Opensuse-logo_hexagon.sh.png" height="20" align="left">openSUSE: ```sudo zypper install unity-gtk-module``` 
 
 Coming soon: [HUD](https://github.com/p-e-w/plotinus) (currently [resolving](https://github.com/p-e-w/plotinus/issues/25) non-root installation). Feel free to open any issues/pull requests if you have any ideas.
