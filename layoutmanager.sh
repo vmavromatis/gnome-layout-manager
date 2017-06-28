@@ -220,7 +220,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	if [[ -e ~/.themes/Human ]]; then 
 		mv -v ~/.themes/Human/ ~/.local/share/themes/Human/    #move old files
 	elif [[ ! -d ~/.local/share/themes/Human ]]; then 
-	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1495328098/Human.zip && unzip -o Human.zip -d ~/.local/share/themes/
+	cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1497836019/Human.zip && unzip -o Human.zip -d ~/.local/share/themes/
 	fi
 	gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'BOTTOM'
 	gsettings set org.gnome.shell.extensions.dash-to-dock intellihide 'false'
