@@ -53,9 +53,9 @@ PICTURES_FOLDER=$(xdg-user-dir PICTURES)
 dirs=( $(find /usr/share/gnome-shell/extensions $HOME/.local/share/gnome-shell/extensions -maxdepth 1 -type d -printf '%P\n') )
 
 
-declare -a EXT_UNITY=('dash-to-dock@micxgx.gmail.com' 'TopIcons@phocean.net' 'user-theme@gnome-shell-extensions.gcampax.github.com' 'Move_Clock@rmy.pobox.com' 'appindicatorsupport@rgcjonas.gmail.com' 'gnomeGlobalAppMenu@lestcape' 'Hide_Activities@shay.shayel.org' 'RemoveAppMenu@rastersoft.com' 'pixel-saver@deadalnix.me')
+declare -a EXT_UNITY=('dash-to-dock@micxgx.gmail.com' 'TopIcons@phocean.net' 'user-theme@gnome-shell-extensions.gcampax.github.com' 'Move_Clock@rmy.pobox.com' 'appindicatorsupport@rgcjonas.gmail.com' 'gnomeGlobalAppMenu@lestcape' 'Hide_Activities@shay.shayel.org' 'RemoveAppMenu@rastersoft.com' 'pixel-saver@deadalnix.me' 'nohotcorner@azuri.free.fr')
 declare -a EXT_WINDOWS=('TopIcons@phocean.net' 'appindicatorsupport@rgcjonas.gmail.com' 'user-theme@gnome-shell-extensions.gcampax.github.com' 'dash-to-panel@jderose9.github.com' 'gnomenu@panacier.gmail.com' 'remove-dropdown-arrows@mpdeimos.com')
-declare -a EXT_MACOS=('dash-to-dock@micxgx.gmail.com' 'TopIcons@phocean.net' 'appindicatorsupport@rgcjonas.gmail.com' 'Move_Clock@rmy.pobox.com' 'user-theme@gnome-shell-extensions.gcampax.github.com')
+declare -a EXT_MACOS=('dash-to-dock@micxgx.gmail.com' 'TopIcons@phocean.net' 'appindicatorsupport@rgcjonas.gmail.com' 'Move_Clock@rmy.pobox.com' 'user-theme@gnome-shell-extensions.gcampax.github.com' 'nohotcorner@azuri.free.fr' 'Hide_Activities@shay.shayel.org')
 
 LAYOUT=""
 
@@ -204,7 +204,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	zenity --info --width=500 --height=200 --text "Layout applied successfully.\nIf you are experiencing any issues, please restart gnome-shell."
 	;;
     macos) 
-   	gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'appindicatorsupport@rgcjonas.gmail.com', 'Move_Clock@rmy.pobox.com', 'user-theme@gnome-shell-extensions.gcampax.github.com']"
+   	gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'appindicatorsupport@rgcjonas.gmail.com', 'Move_Clock@rmy.pobox.com', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'nohotcorner@azuri.free.fr', 'Hide_Activities@shay.shayel.org', 'apps-menu@gnome-shell-extensions.gcampax.github.com', 'places-menu@gnome-shell-extensions.gcampax.github.com']"
 	if [[ -e ~/.themes/Gnome-OSX-II-2-6-NT ]]; then 
 		mv -v ~/.themes/Gnome-OSX-II-NT-2-6/ ~/.local/share/themes/Gnome-OSX-II-2-6-NT/    #move old files
 	elif [[ ! -d ~/.local/share/themes/nome-OSX-II-2-6-NT ]]; then 
@@ -241,7 +241,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 	zenity --info --width=500 --height=200 --text "Layout applied successfully.\nIf you are experiencing any issues, please restart gnome-shell."
 	;;
     unity) 
-    gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'Hide_Activities@shay.shayel.org', 'Move_Clock@rmy.pobox.com', 'appindicatorsupport@rgcjonas.gmail.com', 'pixel-saver@deadalnix.me', 'RemoveAppMenu@rastersoft.com', 'gnomeGlobalAppMenu@lestcape']"
+    gsettings set org.gnome.shell enabled-extensions "['dash-to-dock@micxgx.gmail.com', 'TopIcons@phocean.net', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'Hide_Activities@shay.shayel.org', 'Move_Clock@rmy.pobox.com', 'appindicatorsupport@rgcjonas.gmail.com', 'pixel-saver@deadalnix.me', 'RemoveAppMenu@rastersoft.com', 'gnomeGlobalAppMenu@lestcape', 'nohotcorner@azuri.free.fr']"
 	gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'
 	gsettings set org.gnome.shell.extensions.dash-to-dock intellihide 'false'
 	gsettings set org.gnome.shell.extensions.dash-to-dock background-opacity '0.7'
