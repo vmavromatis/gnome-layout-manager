@@ -211,7 +211,7 @@ glib-compile-schemas ~/.local/share/glib-2.0/schemas/
 		cd /tmp && wget https://dl.opendesktop.org/api/files/download/id/1494791955/Gnome-OSX-II-2-6-NT.tar.gz && tar -xvzf Gnome-OSX-II-2-6-NT.tar.gz -C ~/.local/share/themes/
 	fi
 	if [[ ! -f "$PICTURES_FOLDER"/wallpaper-macos.jpg ]]; then 
-		cd /tmp && wget https://upload.wikimedia.org/wikipedia/commons/9/9b/Aurora_-_panoramio.jpg && mv Aurora_-_panoramio.jpg "$PICTURES_FOLDER"/wallpaper-macos.jpg
+		cd /tmp && wget http://wallpaperswide.com/download/macos_sierra_2-wallpaper-2560x1600.jpg -O macos-desktop.jpg && mv macos-desktop.jpg "$PICTURES_FOLDER"/wallpaper-macos.jpg
 	fi
 	gsettings set org.gnome.desktop.background picture-uri file:///"$PICTURES_FOLDER"/wallpaper-macos.jpg
 	if [[ ! -d ~/.local/share/icons/La-Capitaine ]]; then 
